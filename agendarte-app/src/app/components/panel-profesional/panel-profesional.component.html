@@ -1,0 +1,20 @@
+<div class="panel-container">
+  <div class="header">
+    <h1>📅 Panel Profesional - Calendario</h1>
+    <p>Gestiona tu agenda médica con Google Calendar</p>
+  </div>
+
+  <div class="auth-section">
+    <button class="btn" (click)="authenticate()">🔐 Conectar con Google</button>
+    <button class="btn success" (click)="loadCalendar()">📅 Cargar Eventos</button>
+    <button class="btn danger" (click)="clearCalendar()">🗑️ Limpiar</button>
+    
+    @if (isAuthenticated()) {
+      <div class="status success">✅ Conectado con Google Calendar</div>
+    }
+  </div>
+
+  <div class="calendar-container">
+    <div id="calendar"></div>
+  </div>
+</div>
