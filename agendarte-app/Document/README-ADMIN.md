@@ -6,6 +6,7 @@
 
 - ✅ **Dashboard Base** - Interfaz principal con menú hamburguesa
 - ✅ **Panel Profesional** - Calendario con Google Calendar integrado
+- ✅ **Layout Global** - Header y navegación consistente
 - 🔄 **En Desarrollo** - Funcionalidades administrativas
 
 ## 🏗️ Estructura del Módulo
@@ -75,11 +76,23 @@ src/app/components/
 ## 🎨 Diseño y UX
 
 - **Tema**: Glassmorphism con gradientes
-- **Colores**: Azul/Púrpura (#667eea → #764ba2)
+- **Colores**: Azul oscuro (#415c6b) y azul claro (#eaffff)
+- **Header**: Azul oscuro con texto blanco
+- **Componentes**: Azul oscuro con texto blanco
+- **Calendario**: Fondo blanco con colores sobrios
 - **Responsive**: Mobile-first design
 - **Navegación**: Menú hamburguesa lateral
 
 ## 📝 Changelog
+
+### v0.3.0 - Layout Global y Colores
+- ✅ Header y menú movidos al layout global
+- ✅ Colores actualizados: azul #415c6b y #eaffff
+- ✅ Header azul con texto blanco
+- ✅ Componentes azul oscuro con texto blanco
+- ✅ Calendario con diseño sobrio diferenciado
+- ✅ Botón Google en azul eléctrico
+- ✅ Texto 'all-day' cambiado a 'Horas'
 
 ### v0.2.0 - Panel Profesional
 - ✅ Componente PanelProfesionalComponent creado
