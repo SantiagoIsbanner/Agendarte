@@ -49,6 +49,7 @@ export class PanelProfesionalComponent implements OnInit {
           week: 'Semana',
           day: 'Día'
         },
+        allDayText: 'Horas',
         height: 650,
         eventClick: (info: any) => {
           this.showEventModal(info.event);

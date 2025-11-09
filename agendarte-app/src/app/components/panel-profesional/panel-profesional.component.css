@@ -1,25 +1,27 @@
 .panel-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
   padding: 20px;
+  background: transparent;
+  min-height: calc(100vh - 80px);
 }
 
-.header {
-  background: linear-gradient(135deg, #64748b, #475569);
+.page-header {
+  background: #415c6b;
+  backdrop-filter: blur(10px);
   color: white;
   padding: 32px;
   text-align: center;
   border-radius: 16px;
   margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.header h1 {
+.page-header h1 {
   margin: 0;
   font-size: 2.5rem;
   font-weight: 600;
 }
 
-.header p {
+.page-header p {
   margin-top: 8px;
   font-size: 1.1rem;
   opacity: 0.9;
@@ -28,7 +30,7 @@
 .auth-section {
   padding: 24px 32px;
   text-align: center;
-  background: #ffffff;
+  background: #415c6b;
   border-radius: 12px;
   margin-bottom: 24px;
   display: flex;
@@ -40,7 +42,7 @@
 }
 
 .btn {
-  background: #64748b;
+  background: #415c6b;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -54,7 +56,7 @@
 }
 
 .btn:hover {
-  background: #475569;
+  background: rgba(65, 92, 107, 0.8);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -67,12 +69,14 @@
   background: #059669;
 }
 
-.btn.danger {
-  background: #ef4444;
+
+
+.btn.google-btn {
+  background: #0080ff;
 }
 
-.btn.danger:hover {
-  background: #dc2626;
+.btn.google-btn:hover {
+  background: #0066cc;
 }
 
 .status {
@@ -83,9 +87,9 @@
 }
 
 .status.success {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  background: #eaffff;
+  color: #415c6b;
+  border: 1px solid rgba(65, 92, 107, 0.3);
 }
 
 .calendar-container {
@@ -93,7 +97,7 @@
   border-radius: 16px;
   padding: 32px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e5e7eb;
 }
 
 #calendar {
@@ -104,18 +108,19 @@
 :global(.fc) {
   background: #ffffff;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #d1d5db;
 }
 
 :global(.fc-header-toolbar) {
   padding: 20px 24px !important;
-  background: #f8fafc !important;
+  background: #f9fafb !important;
   border-radius: 12px 12px 0 0 !important;
-  border-bottom: 1px solid #e2e8f0 !important;
+  border-bottom: 1px solid #d1d5db !important;
 }
 
 :global(.fc-button) {
-  background: #64748b !important;
+  background: #6b7280 !important;
+  color: white !important;
   border: none !important;
   border-radius: 6px !important;
   padding: 8px 16px !important;
@@ -125,27 +130,30 @@
 }
 
 :global(.fc-button:hover) {
-  background: #475569 !important;
+  background: #4b5563 !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 :global(.fc-event) {
+  background: #374151 !important;
   border-radius: 6px !important;
   border: none !important;
   padding: 2px 6px !important;
   font-weight: 500 !important;
+  color: white !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
   transition: all 0.2s ease !important;
 }
 
 :global(.fc-event:hover) {
+  background: #1f2937 !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
 :global(.fc-today) {
-  background-color: #e0f2fe !important;
+  background-color: #f3f4f6 !important;
 }
 
 @media (max-width: 768px) {
