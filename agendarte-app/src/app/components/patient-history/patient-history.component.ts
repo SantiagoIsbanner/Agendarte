@@ -45,7 +45,7 @@ export class PatientHistoryComponent implements OnInit {
       endDate: this.endDate
     };
 
-    this.patientHistoryService.getPatientHistory(this.patientId, filters).subscribe({
+    this.patientHistoryService.getPatientHistory(this.patientId.toString(), filters).subscribe({
       next: (response) => {
         this.patient = response.patient;
         this.history = response.history;

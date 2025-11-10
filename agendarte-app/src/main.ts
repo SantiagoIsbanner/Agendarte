@@ -1,5 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/services/app.config';
+import { appConfig } from './app/app.config';
 import { App } from './app/services/app';
 
 bootstrapApplication(App, appConfig)

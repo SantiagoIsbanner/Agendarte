@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: agendarte
+      POSTGRES_PASSWORD: agendarte_pass
+      POSTGRES_DB: agendarte_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: agendarte
+      DATABASE_PASSWORD: agendarte_pass
+      DATABASE_NAME: agendarte_db
+      PORT: 4000
+    ports:
+      - "4000:4000"
+
+volumes:
+  pgdata:

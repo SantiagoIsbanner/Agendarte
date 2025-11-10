@@ -6,9 +6,10 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrls: ['./login.css']
 })
 export class Login {
   email = '';
@@ -39,15 +40,11 @@ export class Login {
     console.log('Intentando login con:', { email: this.email, password: '***' });
 
     this.authService.login(this.email, this.password).subscribe({
-      next: (response) => {
-        console.log('Login exitoso:', response);
-        // Usar el usuario de la respuesta directamente
-        const user = response.user;
-        if (user?.role === 'professional') {
+      next: (user) => {
+        console.log('Login exitoso:', user);
+        if (user.role === 'professional') {
           this.router.navigate(['/app/professional-dashboard']);
-        } else if (user?.role === 'admin') {
-          this.router.navigate(['/app/admin']);
-        } else if (user?.role === 'master') {
+        } else if (user.role === 'admin') {
           this.router.navigate(['/app/admin']);
         } else {
           this.router.navigate(['/app/dashboard']);
