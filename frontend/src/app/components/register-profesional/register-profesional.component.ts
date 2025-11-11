@@ -78,7 +78,7 @@ export class RegisterProfesionalComponent implements AfterViewInit {
       new Date().getFullYear() - new Date(this.usuario.fecha_nacimiento).getFullYear() : 0;
 
     const usuarioData = {
-      mail: this.usuario.mail,
+      mail: this.usuario.mail.toLowerCase(),
       contraseña: this.usuario.contraseña,
       nombre: this.usuario.nombre,
       apellido: this.usuario.apellido,

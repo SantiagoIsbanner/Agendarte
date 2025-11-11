@@ -28,20 +28,13 @@ export class LoginComponent {
     }
 
     this.http.post<any>('http://localhost:3000/api/auth/login', {
-      mail: this.username,
+      mail: this.username.toLowerCase(),
       contraseña: this.password
     }).subscribe({
       next: (response) => {
         const usuario = response.usuario;
         localStorage.setItem('usuario', JSON.stringify(usuario));
-        
-        if (usuario.rol === 'administrador') {
-          this.router.navigate(['/admin']);
-        } else if (usuario.rol === 'profesional') {
-          this.router.navigate(['/panel-profesional']);
-        } else {
-          this.router.navigate(['/inicio']);
-        }
+        this.router.navigate(['/panel']);
       },
       error: (error) => {
         this.errorMessage = error.error?.error || 'Error al iniciar sesión';

@@ -18,7 +18,7 @@ export const routes: Routes = [
   { path: 'register/paciente', component: RegisterPacienteComponent },
   { path: 'register/profesional', component: RegisterProfesionalComponent },
   { path: 'inicio', component: InicioComponent },
-  { path: 'admin', component: AdminDashboardComponent },
+  { path: 'panel', component: AdminDashboardComponent },
   { path: 'panel-profesional', component: PanelProfesionalComponent },
   { path: 'panel-paciente', component: PanelPacienteComponent },
   { path: 'mis-turnos', component: MisTurnosComponent },
