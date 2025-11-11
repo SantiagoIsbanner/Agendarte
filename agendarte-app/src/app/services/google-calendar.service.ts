@@ -53,7 +53,6 @@ export class GoogleCalendarService {
         this.tokenClient.requestAccessToken();
       });
     } catch (error) {
-      console.error('Error en autenticación:', error);
       return false;
     }
   }
@@ -74,7 +73,6 @@ export class GoogleCalendarService {
       const data = await response.json();
       return data.items || [];
     } catch (error) {
-      console.error('Error obteniendo eventos:', error);
       return [];
     }
   }
@@ -97,7 +95,48 @@ export class GoogleCalendarService {
       
       return await response.json();
     } catch (error) {
-      console.error('Error creando evento:', error);
+      throw error;
+    }
+  }
+
+  async deleteEvent(eventId: string): Promise<any> {
+    if (!this.accessToken) throw new Error('No autenticado');
+    
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        }
+      );
+      
+      return response.ok;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateEvent(eventId: string, event: any): Promise<any> {
+    if (!this.accessToken) throw new Error('No autenticado');
+    
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(event)
+        }
+      );
+      
+      return await response.json();
+    } catch (error) {
       throw error;
     }
   }

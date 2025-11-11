@@ -14,7 +14,11 @@ export class PanelProfesionalComponent implements OnInit {
   protected readonly isAuthenticated = signal(false);
   protected readonly events = signal<any[]>([]);
   protected readonly showModal = signal(false);
+  protected readonly showEventModal = signal(false);
   protected readonly isConnecting = signal(false);
+  protected readonly selectedEvent = signal<any>(null);
+  protected isEditing = false;
+  protected editingEventId: string = '';
   
   protected newAppointment = {
     patient: '',
@@ -71,7 +75,7 @@ export class PanelProfesionalComponent implements OnInit {
         allDayText: 'Horas',
         height: 650,
         eventClick: (info: any) => {
-          this.showEventModal(info.event);
+          this.showEventDetails(info.event);
         },
         events: this.events()
       });
@@ -84,13 +88,7 @@ export class PanelProfesionalComponent implements OnInit {
     try {
       const success = await this.googleCalendarService.authenticate();
       this.isAuthenticated.set(success);
-      if (success) {
-        console.log('Conectado con Google Calendar exitosamente');
-      } else {
-        console.error('Error en la autenticación');
-      }
     } catch (error) {
-      console.error('Error conectando con Google:', error);
       this.isAuthenticated.set(false);
     } finally {
       this.isConnecting.set(false);
@@ -109,9 +107,11 @@ export class PanelProfesionalComponent implements OnInit {
         title: event.summary || 'Sin título',
         start: event.start.dateTime || event.start.date,
         end: event.end.dateTime || event.end.date,
+        id: event.id,
         extendedProps: {
           description: event.description,
-          location: event.location
+          location: event.location,
+          googleId: event.id
         }
       }));
       
@@ -120,16 +120,105 @@ export class PanelProfesionalComponent implements OnInit {
         this.calendar.removeAllEvents();
         this.calendar.addEventSource(formattedEvents);
       }
-      console.log('Eventos de Google Calendar cargados:', formattedEvents);
     } catch (error) {
-      console.error('Error cargando eventos:', error);
       alert('Error al cargar eventos de Google Calendar');
     }
   }
 
-  private showEventModal(event: any) {
-    const notes = event.extendedProps?.notes ? `\nNotas: ${event.extendedProps.notes}` : '';
-    alert(`Evento: ${event.title}\nInicio: ${event.start.toLocaleString()}\nFin: ${event.end?.toLocaleString() || 'No definido'}${notes}`);
+  getTodayEvents(): number {
+    const today = new Date().toISOString().split('T')[0];
+    return this.events().filter(event => {
+      const eventDate = new Date(event.start).toISOString().split('T')[0];
+      return eventDate === today;
+    }).length;
+  }
+
+  private showEventDetails(event: any) {
+    this.selectedEvent.set(event);
+    this.showEventModal.set(true);
+  }
+
+  closeEventModal() {
+    this.showEventModal.set(false);
+    this.selectedEvent.set(null);
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  formatTime(dateString: string): string {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  editEvent() {
+    const event = this.selectedEvent();
+    if (!event) return;
+
+    // Marcar como edición y guardar ID del evento
+    this.isEditing = true;
+    this.editingEventId = event.extendedProps?.googleId || event.id || '';
+
+    // Cargar datos del evento en el formulario
+    const eventDate = new Date(event.start);
+    this.newAppointment = {
+      patient: event.title.replace('Consulta - ', ''),
+      email: event.extendedProps?.email || '',
+      date: eventDate.toISOString().split('T')[0],
+      time: eventDate.toTimeString().slice(0, 5),
+      duration: '60',
+      notes: event.extendedProps?.notes || ''
+    };
+
+    this.closeEventModal();
+    this.showModal.set(true);
+  }
+
+  async deleteEvent() {
+    const event = this.selectedEvent();
+    if (!event) return;
+
+    const confirmed = confirm(`¿Estás seguro de eliminar la cita de ${event.title.replace('Consulta - ', '')}?`);
+    if (!confirmed) return;
+
+    try {
+      // Eliminar de Google Calendar si está autenticado
+      if (this.isAuthenticated()) {
+        const googleEventId = event.extendedProps?.googleId || event.id;
+        
+        if (googleEventId) {
+          const deleted = await this.googleCalendarService.deleteEvent(googleEventId);
+          if (!deleted) {
+            throw new Error('No se pudo eliminar de Google Calendar');
+          }
+        }
+      }
+
+      // Eliminar del calendario local
+      if (this.calendar) {
+        event.remove();
+      }
+
+      // Actualizar la lista de eventos
+      const currentEvents = this.events();
+      const updatedEvents = currentEvents.filter(e => e.start !== event.startStr);
+      this.events.set(updatedEvents);
+
+      this.closeEventModal();
+      alert('Cita eliminada exitosamente de Google Calendar');
+    } catch (error) {
+      alert('Error al eliminar la cita de Google Calendar');
+    }
   }
 
   async createQuickAppointment() {
@@ -193,6 +282,8 @@ export class PanelProfesionalComponent implements OnInit {
   
   closeModal() {
     this.showModal.set(false);
+    this.isEditing = false;
+    this.editingEventId = '';
     this.resetForm();
   }
   
@@ -216,33 +307,37 @@ export class PanelProfesionalComponent implements OnInit {
     const googleEvent = {
       summary: `Consulta - ${this.newAppointment.patient}`,
       start: {
-        dateTime: startDateTime,
+        dateTime: new Date(startDateTime).toISOString(),
         timeZone: 'America/Argentina/Buenos_Aires'
       },
       end: {
         dateTime: endTime.toISOString(),
         timeZone: 'America/Argentina/Buenos_Aires'
       },
-      description: this.newAppointment.notes,
+      description: this.newAppointment.notes || 'Consulta médica',
       attendees: [
         {
-          email: this.newAppointment.email,
-          responseStatus: 'needsAction'
+          email: this.newAppointment.email
         }
-      ],
-      reminders: {
-        useDefault: false,
-        overrides: [
-          { method: 'email', minutes: 24 * 60 }, // 1 día antes
-          { method: 'popup', minutes: 30 } // 30 minutos antes
-        ]
-      }
+      ]
     };
     
     try {
+      let result: any = null;
+      
       if (this.isAuthenticated()) {
-        await this.googleCalendarService.createEvent(googleEvent);
-        console.log('Evento creado en Google Calendar con invitación enviada');
+        if (this.isEditing && this.editingEventId) {
+          result = await this.googleCalendarService.updateEvent(this.editingEventId, googleEvent);
+        } else {
+          result = await this.googleCalendarService.createEvent(googleEvent);
+        }
+        
+        if (result?.error) {
+          throw new Error(result.error.message || 'Error desconocido');
+        }
+      } else {
+        alert('Debes estar conectado a Google Calendar para guardar el evento');
+        return;
       }
       
       const newEvent = {
@@ -251,22 +346,42 @@ export class PanelProfesionalComponent implements OnInit {
         end: endTime.toISOString(),
         extendedProps: {
           notes: this.newAppointment.notes,
-          email: this.newAppointment.email
+          email: this.newAppointment.email,
+          googleId: result?.id || this.editingEventId
         }
       };
       
-      const currentEvents = this.events();
-      this.events.set([...currentEvents, newEvent]);
-      
-      if (this.calendar) {
-        this.calendar.addEvent(newEvent);
+      if (this.isEditing) {
+        // Actualizar evento existente en el calendario local
+        const currentEvents = this.events();
+        const updatedEvents = currentEvents.map(e => 
+          e.extendedProps?.googleId === this.editingEventId ? newEvent : e
+        );
+        this.events.set(updatedEvents);
+        
+        if (this.calendar) {
+          // Recargar el calendario para mostrar cambios
+          this.calendar.refetchEvents();
+        }
+      } else {
+        // Agregar nuevo evento
+        const currentEvents = this.events();
+        this.events.set([...currentEvents, newEvent]);
+        
+        if (this.calendar) {
+          this.calendar.addEvent(newEvent);
+        }
       }
       
-      alert(`Turno creado exitosamente.\nSe ha enviado una invitación por email a: ${this.newAppointment.email}`);
-      console.log('Turno asignado con invitación:', newEvent);
+      const action = this.isEditing ? 'actualizado' : 'creado';
+      alert(`Turno ${action} exitosamente en Google Calendar.\nSe ha enviado una invitación por email a: ${this.newAppointment.email}`);
+      
+      // Resetear estado de edición
+      this.isEditing = false;
+      this.editingEventId = '';
+      
       this.closeModal();
     } catch (error) {
-      console.error('Error guardando turno:', error);
       alert('Error al guardar el turno en Google Calendar');
     }
   }

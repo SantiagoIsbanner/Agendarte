@@ -8,7 +8,7 @@
     </div>
     <div class="hero-stats">
       <div class="stat-item">
-        <span class="stat-number">{{ events().length }}</span>
+        <span class="stat-number">{{ getTodayEvents() }}</span>
         <span class="stat-label">Citas Hoy</span>
       </div>
       <div class="stat-item">
@@ -107,6 +107,47 @@
         <div class="modal-footer">
           <button class="btn" (click)="closeModal()">Cancelar</button>
           <button class="btn success" (click)="saveAppointment()">💾 Guardar Turno</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal para detalles del evento -->
+  @if (showEventModal()) {
+    <div class="modal-overlay" (click)="closeEventModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>📅 Detalles de la Cita</h3>
+          <button class="close-btn" (click)="closeEventModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="event-details">
+            <div class="detail-item">
+              <strong>Paciente:</strong>
+              <span>{{ selectedEvent()?.title?.replace('Consulta - ', '') }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Fecha:</strong>
+              <span>{{ formatDate(selectedEvent()?.start) }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Hora:</strong>
+              <span>{{ formatTime(selectedEvent()?.start) }} - {{ formatTime(selectedEvent()?.end) }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Email:</strong>
+              <span>{{ selectedEvent()?.extendedProps?.email || 'No especificado' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Notas:</strong>
+              <span>{{ selectedEvent()?.extendedProps?.notes || 'Sin notas' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn danger" (click)="deleteEvent()">🗑️ Eliminar</button>
+          <button class="btn" (click)="editEvent()">✏️ Modificar</button>
+          <button class="btn" (click)="closeEventModal()">Cerrar</button>
         </div>
       </div>
     </div>

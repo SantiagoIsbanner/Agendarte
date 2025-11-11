@@ -261,6 +261,47 @@
   border-radius: 0 0 12px 12px;
 }
 
+/* Event Details Styles */
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item strong {
+  color: #415c6b;
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.detail-item span {
+  color: #6b7280;
+  text-align: right;
+  flex: 1;
+  margin-left: 16px;
+}
+
+.btn.danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn.danger:hover {
+  background: #dc2626;
+}
+
 /* Modern Buttons */
 .btn-modern {
   display: inline-flex;
