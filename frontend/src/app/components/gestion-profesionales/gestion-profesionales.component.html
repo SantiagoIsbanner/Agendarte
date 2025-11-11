@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="header">
+    <h1>👨⚕️ Gestión de Profesionales</h1>
+    <button class="btn-secondary" (click)="gestionEspecialidades()">🏥 Gestionar Especialidades</button>
+  </div>
+
+  <div class="filters">
+    <input 
+      type="text" 
+      [(ngModel)]="filtroBusqueda" 
+      (ngModelChange)="aplicarFiltros()"
+      placeholder="🔍 Buscar por nombre, apellido o email..."
+      class="search-input">
+    
+    <select [(ngModel)]="filtroEspecialidad" (ngModelChange)="aplicarFiltros()" class="filter-select">
+      <option value="">Todas las especialidades</option>
+      <option *ngFor="let esp of especialidades" [value]="esp.id">{{ esp.nombre }}</option>
+    </select>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>DNI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prof of profesionalesFiltrados">
+          <td>{{ prof.id }}</td>
+          <td>{{ prof.nombre }}</td>
+          <td>{{ prof.apellido }}</td>
+          <td>{{ prof.mail }}</td>
+          <td>{{ prof.numero_telefono }}</td>
+          <td>{{ prof.dni }}</td>
+        </tr>
+        <tr *ngIf="profesionalesFiltrados.length === 0">
+          <td colspan="6" class="no-data">No se encontraron profesionales</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -11,6 +11,8 @@ import { AdministradorComponent } from '../components/administrador/administrado
 import { GestionUsuariosComponent } from '../components/gestion-usuarios/gestion-usuarios.component';
 import { AdminRolesComponent } from '../components/admin-roles/admin-roles.component';
 import { EditarPerfilComponent } from '../components/editar-perfil/editar-perfil.component';
+import { GestionEspecialidadesComponent } from '../components/gestion-especialidades/gestion-especialidades.component';
+import { GestionProfesionalesComponent } from '../components/gestion-profesionales/gestion-profesionales.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -25,5 +27,7 @@ export const routes: Routes = [
   { path: 'administrador', component: AdministradorComponent },
   { path: 'gestion-usuarios', component: GestionUsuariosComponent },
   { path: 'admin-roles', component: AdminRolesComponent },
-  { path: 'editar-perfil', component: EditarPerfilComponent }
+  { path: 'editar-perfil', component: EditarPerfilComponent },
+  { path: 'gestion-especialidades', component: GestionEspecialidadesComponent },
+  { path: 'gestion-profesionales', component: GestionProfesionalesComponent }
 ];

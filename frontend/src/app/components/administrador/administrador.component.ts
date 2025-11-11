@@ -18,7 +18,7 @@ export class AdministradorComponent {
   }
 
   gestionProfesionales() {
-    alert('Gestión de Profesionales - En desarrollo');
+    this.router.navigate(['/gestion-profesionales']);
   }
 
   gestionPacientes() {

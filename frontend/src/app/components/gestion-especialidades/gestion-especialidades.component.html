@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="header">
+    <h1>🏥 Gestión de Especialidades</h1>
+    <button class="btn-primary" (click)="openModal()">➕ Nueva Especialidad</button>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let esp of especialidades">
+          <td>{{ esp.id }}</td>
+          <td>{{ esp.nombre }}</td>
+          <td>{{ esp.descripcion }}</td>
+          <td>
+            <button class="btn-edit" (click)="openModal(esp)">✏️</button>
+            <button class="btn-delete" (click)="delete(esp.id!)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar' : 'Nueva' }} Especialidad</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" [(ngModel)]="especialidadForm.nombre" required>
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="especialidadForm.descripcion" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+        <button class="btn-save" (click)="save()">💾 Guardar</button>
+      </div>
+    </div>
+  </div>
+}
