@@ -8,6 +8,7 @@ import { PanelProfesionalComponent } from '../components/panel-profesional/panel
 import { AdministradorComponent } from '../components/administrador/administrador.component';
 import { GestionUsuariosComponent } from '../components/gestion-usuarios/gestion-usuarios.component';
 import { AdminRolesComponent } from '../components/admin-roles/admin-roles.component';
+import { EditarPerfilComponent } from '../components/editar-perfil/editar-perfil.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'panel-profesional', component: PanelProfesionalComponent },
   { path: 'administrador', component: AdministradorComponent },
   { path: 'gestion-usuarios', component: GestionUsuariosComponent },
-  { path: 'admin-roles', component: AdminRolesComponent }
+  { path: 'admin-roles', component: AdminRolesComponent },
+  { path: 'editar-perfil', component: EditarPerfilComponent }
 ];

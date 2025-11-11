@@ -1,0 +1,107 @@
+<div class="perfil-container">
+  <div class="perfil-header">
+    <h1>✏️ Editar Perfil</h1>
+    <p>Actualiza tu información personal</p>
+  </div>
+
+  <form (ngSubmit)="guardarCambios()" class="perfil-form">
+    <!-- Información de Usuario -->
+    <div class="form-section">
+      <h2>Información Personal</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" [(ngModel)]="usuario.nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label>Apellido *</label>
+          <input type="text" [(ngModel)]="usuario.apellido" name="apellido" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" [(ngModel)]="usuario.mail" name="mail" readonly required>
+        </div>
+        <div class="form-group">
+          <label>DNI</label>
+          <input type="text" [(ngModel)]="usuario.dni" name="dni">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" [(ngModel)]="usuario.numero_telefono" name="telefono">
+        </div>
+        <div class="form-group">
+          <label>Fecha de Nacimiento</label>
+          <input type="text" id="fecha_nacimiento" [(ngModel)]="usuario.fecha_nacimiento" name="fecha_nacimiento" placeholder="dd/mm/aaaa">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Sexo</label>
+          <select [(ngModel)]="usuario.sexo" name="sexo">
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" [(ngModel)]="usuario.direccion" name="direccion">
+        </div>
+      </div>
+    </div>
+
+    <!-- Información Profesional (solo si es profesional) -->
+    @if (usuario.rol === 'profesional') {
+      <div class="form-section">
+        <h2>Información Profesional</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Especialidad *</label>
+            <input type="text" [(ngModel)]="profesional.especialidad" name="especialidad" required>
+          </div>
+          <div class="form-group">
+            <label>Sub-especialidad</label>
+            <input type="text" [(ngModel)]="profesional.sub_especialidad" name="sub_especialidad">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Matrícula *</label>
+            <input type="text" [(ngModel)]="profesional.matricula" name="matricula" required>
+          </div>
+          <div class="form-group">
+            <label>Honorarios</label>
+            <input type="number" [(ngModel)]="profesional.honorarios" name="honorarios">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tiempo de Consulta (minutos)</label>
+            <input type="number" [(ngModel)]="profesional.tiempo_consulta_minutos" name="tiempo_consulta">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Biografía</label>
+          <textarea [(ngModel)]="profesional.bio" name="bio" rows="4"></textarea>
+        </div>
+      </div>
+    }
+
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-save">💾 Guardar Cambios</button>
+    </div>
+  </form>
+</div>
