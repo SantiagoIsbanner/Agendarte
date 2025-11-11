@@ -48,6 +48,12 @@ export class App implements OnInit {
 
   logout(): void {
     this.closeMenu();
+    const usuario = localStorage.getItem('usuario');
+    if (usuario) {
+      const user = JSON.parse(usuario);
+      localStorage.removeItem(`google_token_${user.id}`);
+    }
+    localStorage.removeItem('usuario');
     this.router.navigate(['/login']);
   }
 }

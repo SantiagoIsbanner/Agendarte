@@ -26,10 +26,6 @@
           <span class="btn-icon">🔄</span>
           <span>{{ isLoading() ? 'Actualizando...' : 'Actualizar Turnos' }}</span>
         </button>
-        <button class="btn-modern secondary" (click)="exportarCalendario()">
-          <span class="btn-icon">📥</span>
-          <span>Descargar</span>
-        </button>
       }
     </div>
 
@@ -94,62 +90,60 @@
         <div class="turnos-list">
           @for (evento of eventos(); track evento.id) {
             <div class="turno-card" [ngClass]="obtenerClaseEstado(evento)">
-              <div class="turno-estado-indicator">
-                <span class="estado-icon">{{ obtenerIconoEstado(evento) }}</span>
-              </div>
-
-              <div class="turno-header">
-                <h3 class="turno-titulo">{{ evento.title }}</h3>
-                <span class="turno-tiempo">{{ calcularTiempoRestante(evento.start) }}</span>
-              </div>
-
-              <div class="turno-info">
-                <div class="info-item">
-                  <span class="info-icon">📅</span>
-                  <div class="info-content">
-                    <span class="info-label">Fecha</span>
-                    <span class="info-valor">{{ formatearFecha(evento.start) }}</span>
-                  </div>
+              <div class="turno-content">
+                <div class="turno-header">
+                  <h3 class="turno-titulo">{{ evento.title }}</h3>
+                  <span class="turno-tiempo">{{ calcularTiempoRestante(evento.start) }}</span>
                 </div>
 
-                <div class="info-item">
-                  <span class="info-icon">🕐</span>
-                  <div class="info-content">
-                    <span class="info-label">Hora</span>
-                    <span class="info-valor">{{ formatearHora(evento.start) }} - {{ formatearHora(evento.end) }}</span>
+                <div class="turno-info">
+                  <div class="info-item">
+                    <span class="info-icon">📅</span>
+                    <div class="info-content">
+                      <span class="info-label">Fecha</span>
+                      <span class="info-valor">{{ formatearFecha(evento.start) }}</span>
+                    </div>
                   </div>
+
+                  <div class="info-item">
+                    <span class="info-icon">🕐</span>
+                    <div class="info-content">
+                      <span class="info-label">Hora</span>
+                      <span class="info-valor">{{ formatearHora(evento.start) }} - {{ formatearHora(evento.end) }}</span>
+                    </div>
+                  </div>
+
+                  @if (evento.location) {
+                    <div class="info-item">
+                      <span class="info-icon">📍</span>
+                      <div class="info-content">
+                        <span class="info-label">Ubicación</span>
+                        <span class="info-valor">{{ evento.location }}</span>
+                      </div>
+                    </div>
+                  }
+
+                  @if (evento.profesional) {
+                    <div class="info-item">
+                      <span class="info-icon">👨⚕️</span>
+                      <div class="info-content">
+                        <span class="info-label">Profesional</span>
+                        <span class="info-valor">{{ evento.profesional }}</span>
+                      </div>
+                    </div>
+                  }
                 </div>
 
-                @if (evento.location) {
-                  <div class="info-item">
-                    <span class="info-icon">📍</span>
-                    <div class="info-content">
-                      <span class="info-label">Ubicación</span>
-                      <span class="info-valor">{{ evento.location }}</span>
-                    </div>
-                  </div>
-                }
-
-                @if (evento.profesional) {
-                  <div class="info-item">
-                    <span class="info-icon">👨‍⚕️</span>
-                    <div class="info-content">
-                      <span class="info-label">Profesional</span>
-                      <span class="info-valor">{{ evento.profesional }}</span>
-                    </div>
-                  </div>
-                }
-              </div>
-
-              <div class="turno-actions">
-                <button class="btn-turno-secondary" (click)="verDetalles(evento)">
-                  <span class="icon">ℹ️</span>
-                  Ver Detalles
-                </button>
-                <button class="btn-turno-danger" (click)="cancelarTurno(evento)">
-                  <span class="icon">❌</span>
-                  Cancelar
-                </button>
+                <div class="turno-actions">
+                  <button class="btn-turno-secondary" (click)="verDetalles(evento)">
+                    <span class="icon">ℹ️</span>
+                    Ver Detalles
+                  </button>
+                  <button class="btn-turno-danger" (click)="cancelarTurno(evento)">
+                    <span class="icon">❌</span>
+                    Cancelar
+                  </button>
+                </div>
               </div>
             </div>
           }

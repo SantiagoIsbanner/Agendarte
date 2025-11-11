@@ -77,6 +77,11 @@
   transform: translateY(-5px);
 }
 
+.stat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .stat-card h3 {
   color: white;
   margin: 0 0 1rem 0;
@@ -89,6 +94,16 @@
   color: white;
   font-size: 2.5rem;
   font-weight: 700;
+}
+
+.stat-number.loading {
+  opacity: 0.5;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 @media (max-width: 768px) {

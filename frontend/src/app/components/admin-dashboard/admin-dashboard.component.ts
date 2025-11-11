@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UsuarioService } from '../../services/usuario.service';
+import { GoogleCalendarService } from '../../services/google-calendar.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -10,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
   showPasswordModal = false;
   passwordData = {
     actual: '',
@@ -18,7 +20,63 @@ export class AdminDashboardComponent {
     confirmar: ''
   };
 
-  constructor(private router: Router) {}
+  protected readonly usuario = signal<any>(null);
+  protected readonly totalProfesionales = signal<number>(0);
+  protected readonly totalPacientes = signal<number>(0);
+  protected readonly citasHoy = signal<number>(0);
+  protected readonly isLoadingStats = signal<boolean>(true);
+
+  constructor(
+    private router: Router,
+    private usuarioService: UsuarioService,
+    private googleCalendarService: GoogleCalendarService
+  ) {}
+
+  ngOnInit() {
+    this.loadUserData();
+    this.loadStats();
+  }
+
+  private loadUserData() {
+    const userData = localStorage.getItem('usuario');
+    if (userData) {
+      this.usuario.set(JSON.parse(userData));
+    }
+  }
+
+  private async loadStats() {
+    this.isLoadingStats.set(true);
+    try {
+      this.usuarioService.getUsuarios().subscribe({
+        next: (usuarios) => {
+          const profesionales = usuarios.filter(u => u.rol === 'profesional');
+          const pacientes = usuarios.filter(u => u.rol === 'usuario');
+          this.totalProfesionales.set(profesionales.length);
+          this.totalPacientes.set(pacientes.length);
+        },
+        error: (error) => console.error('Error cargando usuarios:', error)
+      });
+
+      if (this.googleCalendarService.isSignedIn()) {
+        const eventos = await this.googleCalendarService.getEvents();
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const finHoy = new Date(hoy);
+        finHoy.setHours(23, 59, 59, 999);
+        
+        const citasDeHoy = eventos.filter(event => {
+          const titulo = event.summary || '';
+          const fechaEvento = new Date(event.start.dateTime || event.start.date);
+          return titulo.startsWith('Cita -') && fechaEvento >= hoy && fechaEvento <= finHoy;
+        });
+        this.citasHoy.set(citasDeHoy.length);
+      }
+    } catch (error) {
+      console.error('Error cargando estadísticas:', error);
+    } finally {
+      this.isLoadingStats.set(false);
+    }
+  }
 
   editarPerfil() {
     this.router.navigate(['/editar-perfil']);

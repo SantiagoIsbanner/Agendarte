@@ -157,6 +157,9 @@ export class PanelPacienteComponent implements OnInit {
     try {
       const success = await this.googleCalendarService.authenticate();
       this.isAuthenticated.set(success);
+      if (success) {
+        await this.loadCalendar();
+      }
     } catch (error) {
       this.isAuthenticated.set(false);
     } finally {

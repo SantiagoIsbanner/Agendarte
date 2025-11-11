@@ -14,6 +14,7 @@ import { EditarPerfilComponent } from '../components/editar-perfil/editar-perfil
 import { GestionEspecialidadesComponent } from '../components/gestion-especialidades/gestion-especialidades.component';
 import { GestionProfesionalesComponent } from '../components/gestion-profesionales/gestion-profesionales.component';
 import { GestionPacientesComponent } from '../components/gestion-pacientes/gestion-pacientes.component';
+import { authGuard } from '../guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -21,15 +22,15 @@ export const routes: Routes = [
   { path: 'register/paciente', component: RegisterPacienteComponent },
   { path: 'register/profesional', component: RegisterProfesionalComponent },
   { path: 'inicio', component: InicioComponent },
-  { path: 'panel', component: AdminDashboardComponent },
-  { path: 'panel-profesional', component: PanelProfesionalComponent },
-  { path: 'panel-paciente', component: PanelPacienteComponent },
-  { path: 'mis-turnos', component: MisTurnosComponent },
-  { path: 'administrador', component: AdministradorComponent },
-  { path: 'gestion-usuarios', component: GestionUsuariosComponent },
-  { path: 'admin-roles', component: AdminRolesComponent },
-  { path: 'editar-perfil', component: EditarPerfilComponent },
-  { path: 'gestion-especialidades', component: GestionEspecialidadesComponent },
-  { path: 'gestion-profesionales', component: GestionProfesionalesComponent },
-  { path: 'gestion-pacientes', component: GestionPacientesComponent }
+  { path: 'panel', component: AdminDashboardComponent, canActivate: [authGuard] },
+  { path: 'panel-profesional', component: PanelProfesionalComponent, canActivate: [authGuard] },
+  { path: 'panel-paciente', component: PanelPacienteComponent, canActivate: [authGuard] },
+  { path: 'mis-turnos', component: MisTurnosComponent, canActivate: [authGuard] },
+  { path: 'administrador', component: AdministradorComponent, canActivate: [authGuard] },
+  { path: 'gestion-usuarios', component: GestionUsuariosComponent, canActivate: [authGuard] },
+  { path: 'admin-roles', component: AdminRolesComponent, canActivate: [authGuard] },
+  { path: 'editar-perfil', component: EditarPerfilComponent, canActivate: [authGuard] },
+  { path: 'gestion-especialidades', component: GestionEspecialidadesComponent, canActivate: [authGuard] },
+  { path: 'gestion-profesionales', component: GestionProfesionalesComponent, canActivate: [authGuard] },
+  { path: 'gestion-pacientes', component: GestionPacientesComponent, canActivate: [authGuard] }
 ];
