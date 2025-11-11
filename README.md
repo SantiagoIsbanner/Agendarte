@@ -52,7 +52,16 @@ npm install
 ng serve
 ```
 
-### Base de Datos
+### Base de Datos (Docker)
+```bash
+# Levantar PostgreSQL en Docker
+docker-compose up -d
+
+# Verificar que esté funcionando
+docker-compose ps
+```
+
+### Base de Datos (Manual)
 ```bash
 psql -U postgres -f database/create_database.sql
 ```

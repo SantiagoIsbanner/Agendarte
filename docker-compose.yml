@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: agendarte-db
+    environment:
+      POSTGRES_DB: agendarte2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
