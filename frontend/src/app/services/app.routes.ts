@@ -5,6 +5,8 @@ import { RegisterProfesionalComponent } from '../components/register-profesional
 import { AdminDashboardComponent } from '../components/admin-dashboard/admin-dashboard.component';
 import { PanelProfesionalComponent } from '../components/panel-profesional/panel-profesional.component';
 import { AdministradorComponent } from '../components/administrador/administrador.component';
+import { GestionUsuariosComponent } from '../components/gestion-usuarios/gestion-usuarios.component';
+import { AdminRolesComponent } from '../components/admin-roles/admin-roles.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -13,5 +15,7 @@ export const routes: Routes = [
   { path: 'admin', component: AdminDashboardComponent },
   { path: 'panel-profesional', component: PanelProfesionalComponent },
   { path: 'administrador', component: AdministradorComponent },
+  { path: 'gestion-usuarios', component: GestionUsuariosComponent },
+  { path: 'admin-roles', component: AdminRolesComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

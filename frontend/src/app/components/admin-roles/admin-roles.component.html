@@ -1,0 +1,63 @@
+<div class="roles-container">
+  <div class="header-section">
+    <button class="back-btn" (click)="volver()">← Volver</button>
+    <div class="header-content">
+      <h1>⚙️ Administración de Roles y Permisos</h1>
+      <p>Configure qué páginas puede acceder cada rol del sistema</p>
+    </div>
+  </div>
+
+  <div class="roles-grid">
+    <div class="role-card" *ngFor="let rol of roles">
+      <div class="role-header">
+        <div class="role-icon">
+          <span *ngIf="rol === 'administrador'">⚙️</span>
+          <span *ngIf="rol === 'profesional'">👨⚕️</span>
+          <span *ngIf="rol === 'usuario'">👤</span>
+        </div>
+        <div class="role-info">
+          <h3>{{ rol | titlecase }}</h3>
+          <p *ngIf="rol === 'administrador'">Control total del sistema</p>
+          <p *ngIf="rol === 'profesional'">Médicos y especialistas</p>
+          <p *ngIf="rol === 'usuario'">Pacientes del sistema</p>
+        </div>
+      </div>
+      
+      <div class="permissions-list">
+        <div class="permission-item" *ngFor="let item of menuItems">
+          <div class="permission-info">
+            <span class="permission-icon">{{ item.icon }}</span>
+            <div class="permission-details">
+              <span class="permission-label">{{ item.label }}</span>
+              <small class="permission-desc">Acceso a {{ item.label.toLowerCase() }}</small>
+            </div>
+          </div>
+          <label class="toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="tienePermiso(rol, item.key)"
+              (change)="togglePermiso(rol, item.key)"
+              [disabled]="rol === 'administrador'">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-section">
+    <button class="save-btn" (click)="guardarCambios()">
+      💾 Guardar Cambios
+    </button>
+  </div>
+</div>
+
+<!-- Modal de éxito -->
+<div class="modal-overlay" *ngIf="showSuccessModal">
+  <div class="success-modal">
+    <div class="success-icon">✓</div>
+    <h3>Cambios Guardados</h3>
+    <p>Los permisos se han actualizado correctamente</p>
+    <div class="loading-bar"></div>
+  </div>
+</div>
