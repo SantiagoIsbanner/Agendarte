@@ -52,16 +52,42 @@ npm install
 ng serve
 ```
 
-### Base de Datos (Docker)
+### Base de Datos
+
+#### Opción 1: Docker (Recomendado)
 ```bash
-# Levantar PostgreSQL en Docker
+# 1. Asegúrate de que Docker Desktop esté ejecutándose
+
+# 2. Levantar PostgreSQL en Docker
 docker-compose up -d
 
-# Verificar que esté funcionando
+# 3. Verificar que esté funcionando
 docker-compose ps
+
+# 4. Ver logs si hay problemas
+docker-compose logs postgres
 ```
 
-### Base de Datos (Manual)
+**Datos de conexión:**
+- Host: `localhost`
+- Puerto: `5433`
+- Base de datos: `agendarte2`
+- Usuario: `postgres`
+- Contraseña: `admin123`
+
+#### Comandos útiles:
+```bash
+# Parar la base de datos
+docker-compose down
+
+# Conectar desde terminal
+docker exec -it agendarte-db psql -U postgres -d agendarte2
+
+# Limpiar completamente (elimina datos)
+docker-compose down -v
+```
+
+#### Opción 2: Instalación Manual
 ```bash
 psql -U postgres -f database/create_database.sql
 ```
