@@ -1,0 +1,101 @@
+.admin-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+}
+
+/* Reuse admin hero styles to respect the head */
+.hero-section {
+  background: linear-gradient(135deg, #415c6b 0%, #2d4a57 100%);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 32px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(65, 92, 107, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(234, 255, 255, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero-content {
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.hero-content h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  background: linear-gradient(45deg, #ffffff, #eaffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-content p {
+  font-size: 1.05rem;
+  opacity: 0.95;
+  margin: 0;
+}
+
+.actions-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.action-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.card-icon { font-size: 2.2rem; margin-bottom: 12px; }
+
+.action-card h3 { color: #415c6b; margin: 0 0 8px 0; }
+.action-card p { color: #6b7280; margin: 0; }
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-action.primary {
+  background: linear-gradient(135deg, #415c6b, #2d4a57);
+  color: white;
+  box-shadow: 0 4px 15px rgba(65, 92, 107, 0.3);
+}
+
+@media (max-width: 768px) {
+  .admin-container { padding: 16px; }
+  .hero-content h1 { font-size: 1.9rem; }
+  .actions-section { grid-template-columns: 1fr; }
+}
