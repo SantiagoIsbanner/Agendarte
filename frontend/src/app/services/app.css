@@ -6,10 +6,33 @@
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 1rem 2rem;
   background: #415c6b;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Login button for header (visible only on Inicio via *ngIf) */
+.header-login-btn {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+  font-weight: 600;
+}
+
+.header-login-btn:hover {
+  background: rgba(255,255,255,0.08);
 }
 
 .hamburger-btn {
