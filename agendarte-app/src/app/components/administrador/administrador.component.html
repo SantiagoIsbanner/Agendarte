@@ -1,0 +1,43 @@
+<div class="admin-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-icon">⚙️</div>
+      <h1>Panel de Administración</h1>
+      <p>Gestiona usuarios y configuraciones del sistema</p>
+    </div>
+  </div>
+
+  <!-- Actions Section -->
+  <div class="actions-section">
+    <div class="action-card">
+      <div class="card-icon">👤</div>
+      <h3>Gestión de Usuarios</h3>
+      <p>Administra usuarios del sistema médico</p>
+      <button class="btn-action primary" (click)="altaUsuario()">
+        <span class="btn-icon">👤</span>
+        <span>Gestión de Usuarios</span>
+      </button>
+    </div>
+
+    <div class="action-card">
+      <div class="card-icon">👨⚕️</div>
+      <h3>Profesionales</h3>
+      <p>Gestión de médicos y especialistas</p>
+      <button class="btn-action primary" (click)="gestionProfesionales()">
+        <span class="btn-icon">👨⚕️</span>
+        <span>Gestionar Profesionales</span>
+      </button>
+    </div>
+
+    <div class="action-card">
+      <div class="card-icon">🏥</div>
+      <h3>Pacientes</h3>
+      <p>Administración de pacientes del sistema</p>
+      <button class="btn-action primary" (click)="gestionPacientes()">
+        <span class="btn-icon">👥</span>
+        <span>Gestionar Pacientes</span>
+      </button>
+    </div>
+  </div>
+</div>
