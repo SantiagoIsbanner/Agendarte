@@ -1,59 +1,81 @@
-# AgendarteApp
+# 🎨 Frontend - Agendarte
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
+Aplicación web para el sistema de gestión de turnos médicos desarrollada con Angular 20.
 
-## Development server
+## 🏗️ Estructura
 
-To start a local development server, run:
+```
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── components/       # Componentes de la aplicación
+│   │   ├── services/         # Servicios para API
+│   │   ├── models/          # Interfaces y modelos
+│   │   └── guards/          # Guards de autenticación
+│   ├── assets/              # Recursos estáticos
+│   └── environments/        # Configuraciones de entorno
+├── angular.json             # Configuración de Angular
+└── package.json             # Dependencias y scripts
+```
+
+## 🚀 Instalación y Desarrollo
 
 ```bash
+# Instalar dependencias
+npm install
+
+# Servidor de desarrollo
 ng serve
-```
+# Aplicación disponible en http://localhost:4200
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+# Build para producción
 ng build
-```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
+# Ejecutar tests
 ng test
 ```
 
-## Running end-to-end tests
+## 🔧 Comandos Angular CLI
 
-For end-to-end (e2e) testing, run:
-
+### Generar componentes
 ```bash
-ng e2e
+ng generate component components/nombre-componente
+ng generate service services/nombre-servicio
+ng generate guard guards/auth
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Otros comandos útiles
+```bash
+ng generate --help          # Ver todas las opciones
+ng build --prod            # Build optimizado
+ng lint                    # Verificar código
+```
 
-## Additional Resources
+## 🛠️ Tecnologías
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Angular 20** - Framework principal
+- **TypeScript** - Lenguaje de programación
+- **Angular Material** - Componentes UI
+- **RxJS** - Programación reactiva
+- **Angular Router** - Navegación
+
+## 🌐 Configuración API
+
+La aplicación se conecta al backend en `http://localhost:3000/api`
+
+Configura la URL en `src/environments/environment.ts`:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000/api'
+};
+```
+
+## 📱 Funcionalidades
+
+- Gestión de turnos médicos
+- Autenticación de usuarios
+- Panel de administración
+- Calendario de citas
+- Gestión de pacientes

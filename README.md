@@ -1,5 +1,7 @@
 # 🏥 Agendarte - Sistema de Gestión de Turnos Médicos
 
+Sistema completo para la gestión de turnos médicos con backend en Node.js/Express y frontend en Angular.
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -10,7 +12,8 @@ Agendarte/
 │   │   ├── models/           # Modelos de base de datos
 │   │   ├── routes/           # Definición de rutas API
 │   │   ├── middleware/       # Middleware personalizado
-│   │   └── services/         # Lógica de negocio
+│   │   ├── services/         # Lógica de negocio
+│   │   └── server.js         # Servidor principal
 │   ├── package.json
 │   └── .env.example
 ├── frontend/                  # Angular App (Angular 20)
@@ -26,14 +29,19 @@ Agendarte/
 └── README.md
 ```
 
-## 🚀 Instalación
+## 🚀 Instalación y Configuración
+
+### Prerrequisitos
+- Node.js (v18 o superior)
+- Angular CLI (v20)
+- PostgreSQL
 
 ### Backend
 ```bash
 cd backend
 npm install
 cp .env.example .env
-# Configurar variables de entorno
+# Configurar variables de entorno en .env
 npm run dev
 ```
 
@@ -44,8 +52,19 @@ npm install
 ng serve
 ```
 
-## 🗄️ Base de Datos
-Ejecutar el script SQL en PostgreSQL:
+### Base de Datos
 ```bash
 psql -U postgres -f database/create_database.sql
 ```
+
+## 🔧 Desarrollo
+
+- **Backend**: Puerto 3000 (API REST)
+- **Frontend**: Puerto 4200 (Angular Dev Server)
+- **Base de Datos**: PostgreSQL
+
+## 📚 Documentación
+
+Consulta los README específicos en cada carpeta:
+- [Backend README](./backend/README.md)
+- [Frontend README](./frontend/README.md)
