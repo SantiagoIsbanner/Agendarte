@@ -3,7 +3,8 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { User, UserRole } from '../models/user.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface RegisterData {
   email: string;
@@ -21,7 +22,7 @@ export interface RegisterData {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api'; // Cambiar por tu API real
+  private apiUrl = environment.apiUrl;
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
 
@@ -43,16 +44,15 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<User> {
-    const mockUser: User = {
-      id: '1',
-      name: 'Usuario Demo',
-      email: email,
-      role: UserRole.ADMIN
-    };
-    
-    localStorage.setItem('currentUser', JSON.stringify(mockUser));
-    this.currentUserSubject.next(mockUser);
-    return of(mockUser).pipe(delay(500));
+    return this.http.post<{user: User, token: string}>(`${this.apiUrl}/auth/login`, { email, password })
+      .pipe(
+        map(response => {
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          localStorage.setItem('token', response.token);
+          this.currentUserSubject.next(response.user);
+          return response.user;
+        })
+      );
   }
 
   logout(): void {
@@ -67,19 +67,6 @@ export class AuthService {
   }
 
   register(userData: RegisterData): Observable<any> {
-    // En un entorno de producción, esto sería una llamada real al backend
-    return of({ 
-      success: true, 
-      message: 'Usuario registrado exitosamente',
-      user: { 
-        id: Math.random().toString(36).substr(2, 9),
-        email: userData.email,
-        name: `${userData.firstName} ${userData.lastName}`,
-        role: UserRole.PATIENT // Por defecto, los usuarios registrados son pacientes
-      }
-    }).pipe(delay(1000));
-    
-    // Para implementación real con backend:
-    // return this.http.post(`${this.apiUrl}/register`, userData);
+    return this.http.post(`${this.apiUrl}/auth/register`, userData);
   }
 }
