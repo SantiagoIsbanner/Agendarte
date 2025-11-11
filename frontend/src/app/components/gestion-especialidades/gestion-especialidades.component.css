@@ -9,6 +9,23 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  gap: 16px;
+}
+
+.btn-back {
+  background: #f3f4f6;
+  color: #415c6b;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-back:hover {
+  background: #e5e7eb;
+  transform: translateX(-2px);
 }
 
 .header h1 {
