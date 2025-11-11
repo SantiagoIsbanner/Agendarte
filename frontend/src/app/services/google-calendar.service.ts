@@ -13,6 +13,31 @@ export class GoogleCalendarService {
   private accessToken: string = '';
   private isInitialized = false;
 
+  constructor() {
+    this.loadTokenForCurrentUser();
+  }
+
+  private loadTokenForCurrentUser() {
+    const usuario = localStorage.getItem('usuario');
+    if (usuario) {
+      const user = JSON.parse(usuario);
+      const tokenKey = `google_token_${user.id}`;
+      const savedToken = localStorage.getItem(tokenKey);
+      if (savedToken) {
+        this.accessToken = savedToken;
+      }
+    }
+  }
+
+  private saveTokenForCurrentUser(token: string) {
+    const usuario = localStorage.getItem('usuario');
+    if (usuario) {
+      const user = JSON.parse(usuario);
+      const tokenKey = `google_token_${user.id}`;
+      localStorage.setItem(tokenKey, token);
+    }
+  }
+
   async initializeGapi(): Promise<void> {
     if (this.isInitialized) return;
 
@@ -26,6 +51,7 @@ export class GoogleCalendarService {
           callback: (response: any) => {
             if (response.access_token) {
               this.accessToken = response.access_token;
+              this.saveTokenForCurrentUser(response.access_token);
             }
           },
         });
@@ -45,6 +71,7 @@ export class GoogleCalendarService {
         this.tokenClient.callback = (response: any) => {
           if (response.access_token) {
             this.accessToken = response.access_token;
+            this.saveTokenForCurrentUser(response.access_token);
             resolve(true);
           } else {
             resolve(false);

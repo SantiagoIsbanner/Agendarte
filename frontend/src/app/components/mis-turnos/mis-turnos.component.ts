@@ -76,12 +76,13 @@ export class MisTurnosComponent implements OnInit {
       // Obtener eventos de Google Calendar
       const googleEventos = await this.googleCalendarService.getEvents();
       
-      // Filtrar eventos futuros
+      // Filtrar solo citas de la aplicación (que empiezan con "Cita -")
       const ahora = new Date();
       const eventosFuturos = googleEventos
         .filter(event => {
+          const titulo = event.summary || '';
           const fechaEvento = new Date(event.start.dateTime || event.start.date);
-          return fechaEvento >= ahora;
+          return titulo.startsWith('Cita -') && fechaEvento >= ahora;
         })
         .sort((a, b) => {
           const fechaA = new Date(a.start.dateTime || a.start.date);

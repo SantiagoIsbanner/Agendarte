@@ -17,6 +17,11 @@ export interface Usuario {
   sexo?: 'masculino' | 'femenino' | 'otro';
   direccion?: string;
   especialidad?: string;
+  sub_especialidad?: string;
+  honorarios?: number;
+  matricula?: string;
+  tiempo_consulta_minutos?: number;
+  bio?: string;
   created_at: string;
 }
 

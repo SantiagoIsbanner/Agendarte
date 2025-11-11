@@ -18,6 +18,15 @@ export class PanelPacienteComponent implements OnInit {
   protected readonly showModal = signal(false);
   protected readonly isConnecting = signal(false);
   protected readonly selectedEvent = signal<any>(null);
+  protected readonly isEditingEvent = signal(false);
+  
+  protected editEventData = {
+    title: '',
+    fecha: '',
+    hora: '',
+    duracion: '60',
+    notas: ''
+  };
   protected readonly profesionales = signal<Usuario[]>([]);
   protected readonly especialidades = signal<string[]>([]);
   protected readonly profesionalesFiltrados = signal<Usuario[]>([]);
@@ -47,6 +56,10 @@ export class PanelPacienteComponent implements OnInit {
     this.isAuthenticated.set(this.googleCalendarService.isSignedIn());
     // Cargar profesionales
     this.loadProfesionales();
+    // Cargar eventos automáticamente si está autenticado
+    if (this.isAuthenticated()) {
+      this.loadCalendar();
+    }
   }
 
   private loadProfesionales() {
@@ -143,6 +156,9 @@ export class PanelPacienteComponent implements OnInit {
     try {
       const success = await this.googleCalendarService.authenticate();
       this.isAuthenticated.set(success);
+      if (success) {
+        await this.loadCalendar();
+      }
     } catch (error) {
       this.isAuthenticated.set(false);
     } finally {
@@ -181,21 +197,89 @@ export class PanelPacienteComponent implements OnInit {
   }
 
   getUpcomingAppointments(): number {
-    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const todayEnd = new Date(now);
+    todayEnd.setHours(23, 59, 59, 999);
+    
     return this.events().filter(event => {
-      const eventDate = new Date(event.start).toISOString().split('T')[0];
-      return eventDate >= today;
+      if (!event.title.startsWith('Cita -')) return false;
+      const eventDate = new Date(event.start);
+      return eventDate >= now && eventDate <= todayEnd;
     }).length;
   }
 
   private showEventDetails(event: any) {
     this.selectedEvent.set(event);
     this.showEventModal.set(true);
+    this.isEditingEvent.set(false);
   }
 
   closeEventModal() {
     this.showEventModal.set(false);
     this.selectedEvent.set(null);
+    this.isEditingEvent.set(false);
+  }
+
+  startEditEvent() {
+    const event = this.selectedEvent();
+    if (!event) return;
+
+    const startDate = new Date(event.start);
+    this.editEventData.title = event.title;
+    this.editEventData.fecha = startDate.toISOString().split('T')[0];
+    this.editEventData.hora = startDate.toTimeString().slice(0, 5);
+    this.editEventData.notas = event.extendedProps?.description || '';
+    
+    const endDate = new Date(event.end);
+    const duration = Math.round((endDate.getTime() - startDate.getTime()) / 60000);
+    this.editEventData.duracion = duration.toString();
+
+    this.isEditingEvent.set(true);
+  }
+
+  async saveEditedEvent() {
+    const event = this.selectedEvent();
+    if (!event) return;
+
+    if (!this.editEventData.fecha || !this.editEventData.hora) {
+      alert('Por favor completa todos los campos obligatorios');
+      return;
+    }
+
+    const startDateTime = `${this.editEventData.fecha}T${this.editEventData.hora}:00`;
+    const endTime = new Date(startDateTime);
+    endTime.setMinutes(endTime.getMinutes() + parseInt(this.editEventData.duracion));
+
+    const googleEvent = {
+      summary: this.editEventData.title,
+      start: {
+        dateTime: new Date(startDateTime).toISOString(),
+        timeZone: 'America/Argentina/Buenos_Aires'
+      },
+      end: {
+        dateTime: endTime.toISOString(),
+        timeZone: 'America/Argentina/Buenos_Aires'
+      },
+      description: this.editEventData.notas
+    };
+
+    try {
+      const googleEventId = event.extendedProps?.googleId || event.id;
+      
+      if (this.isAuthenticated() && googleEventId) {
+        await this.googleCalendarService.updateEvent(googleEventId, googleEvent);
+      }
+
+      event.setProp('title', this.editEventData.title);
+      event.setStart(startDateTime);
+      event.setEnd(endTime.toISOString());
+      event.setExtendedProp('description', this.editEventData.notas);
+
+      alert('Cita actualizada exitosamente');
+      this.closeEventModal();
+    } catch (error) {
+      alert('Error al actualizar la cita');
+    }
   }
 
   formatDate(dateString: string): string {
@@ -216,22 +300,20 @@ export class PanelPacienteComponent implements OnInit {
     });
   }
 
-  async cancelAppointment() {
+  async deleteAppointment() {
     const event = this.selectedEvent();
     if (!event) return;
 
-    const confirmed = confirm(`¿Estás seguro de cancelar la cita de ${event.title}?`);
+    const confirmed = confirm(`¿Estás seguro de eliminar la cita de ${event.title}?`);
     if (!confirmed) return;
 
     try {
-      if (this.isAuthenticated()) {
-        const googleEventId = event.extendedProps?.googleId || event.id;
+      const googleEventId = event.extendedProps?.googleId || event.id;
 
-        if (googleEventId) {
-          const deleted = await this.googleCalendarService.deleteEvent(googleEventId);
-          if (!deleted) {
-            throw new Error('No se pudo cancelar la cita');
-          }
+      if (this.isAuthenticated() && googleEventId) {
+        const deleted = await this.googleCalendarService.deleteEvent(googleEventId);
+        if (!deleted) {
+          throw new Error('No se pudo eliminar la cita');
         }
       }
 
@@ -244,9 +326,9 @@ export class PanelPacienteComponent implements OnInit {
       this.events.set(updatedEvents);
 
       this.closeEventModal();
-      alert('Cita cancelada exitosamente');
+      alert('Cita eliminada exitosamente');
     } catch (error) {
-      alert('Error al cancelar la cita');
+      alert('Error al eliminar la cita');
     }
   }
 

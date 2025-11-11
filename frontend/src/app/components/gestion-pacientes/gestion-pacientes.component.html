@@ -1,0 +1,45 @@
+<div class="container">
+  <div class="header">
+    <button class="btn-back" onclick="history.back()">← Atrás</button>
+    <h1>👥 Gestión de Pacientes</h1>
+  </div>
+
+  <div class="filters">
+    <input 
+      type="text" 
+      [(ngModel)]="filtroBusqueda" 
+      (ngModelChange)="aplicarFiltros()"
+      placeholder="🔍 Buscar por nombre, apellido, email o DNI..."
+      class="search-input">
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>DNI</th>
+          <th>Teléfono</th>
+          <th>Edad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pac of pacientesFiltrados">
+          <td>{{ pac.id }}</td>
+          <td>{{ pac.nombre }}</td>
+          <td>{{ pac.apellido }}</td>
+          <td>{{ pac.mail }}</td>
+          <td>{{ pac.dni }}</td>
+          <td>{{ pac.numero_telefono }}</td>
+          <td>{{ pac.edad }}</td>
+        </tr>
+        <tr *ngIf="pacientesFiltrados.length === 0">
+          <td colspan="7" class="no-data">No se encontraron pacientes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
