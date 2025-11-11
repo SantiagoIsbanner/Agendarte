@@ -8,13 +8,14 @@ Agendarte es una aplicación web desarrollada en Angular para la gestión comple
 
 ## 🚀 Estado del Desarrollo
 
-**Progreso General: 60% Completado**
+**Progreso General: 75% Completado**
 
-- ✅ **Módulo Administrador** - Dashboard y gestión básica
-- ✅ **Perfil Profesional** - Calendario y gestión de citas
+- ✅ **Módulo Administrador** - Dashboard y panel de administración completo
+- ✅ **Perfil Profesional** - Calendario con Google Calendar integrado
+- ✅ **Panel de Administración** - Gestión de usuarios, profesionales y pacientes
 - ✅ **Layout Global** - Navegación consistente
-- 🔄 **En Desarrollo** - Módulo Pacientes
-- 📋 **Planificado** - Reportes y estadísticas
+- 🔄 **En Desarrollo** - Funcionalidades específicas de gestión
+- 📋 **Planificado** - Backend y base de datos
 
 ## 🏗️ Arquitectura del Sistema
 
@@ -22,12 +23,14 @@ Agendarte es una aplicación web desarrollada en Angular para la gestión comple
 src/app/
 ├── components/
 │   ├── admin-dashboard/       # 🔐 Módulo Administrador
-│   └── panel-profesional/     # 👨‍⚕️ Perfil Profesional
+│   ├── panel-profesional/     # 👨⚕️ Perfil Profesional
+│   └── administrador/         # ⚙️ Panel de Administración
 ├── services/
 │   ├── app.ts                 # Componente principal
 │   ├── app.html              # Layout global
 │   ├── app.css               # Estilos globales
-│   └── app.routes.ts         # Configuración de rutas
+│   ├── app.routes.ts         # Configuración de rutas
+│   └── google-calendar.service.ts # Servicio Google Calendar
 └── README-*.md               # Documentación específica
 ```
 
@@ -38,16 +41,22 @@ src/app/
 - ✅ Menú hamburguesa lateral
 - ✅ Cards de métricas básicas
 - ✅ Diseño glassmorphism
-- 📋 Gestión de profesionales (próximamente)
-- 📋 Gestión de pacientes (próximamente)
 
-### 👨‍⚕️ **Perfil Profesional** (`/panel-profesional`)
+### ⚙️ **Panel de Administración** (`/administrador`)
+- ✅ Gestión de usuarios del sistema
+- ✅ Gestión de profesionales médicos
+- ✅ Gestión de pacientes
+- ✅ Interfaz moderna con cards de acción
+
+### 👨⚕️ **Perfil Profesional** (`/panel-profesional`)
 - ✅ Calendario FullCalendar v6.1.10
-- ✅ Integración Google Calendar (simulada)
+- ✅ Integración Google Calendar REAL
 - ✅ Vistas: Mes, Semana, Día
-- ✅ Eventos interactivos
-- ✅ Diseño diferenciado con colores sobrios
-- ✅ Botón conexión Google en azul eléctrico
+- ✅ Crear, modificar y eliminar citas
+- ✅ Sincronización bidireccional con Google Calendar
+- ✅ Invitaciones automáticas por email
+- ✅ Modal de detalles de eventos
+- ✅ Diseño moderno con hero section
 
 ### 🎨 **Layout Global**
 - ✅ Header consistente en todas las páginas
@@ -71,6 +80,7 @@ src/app/
 
 ## 🛠️ Tecnologías Utilizadas
 
+### Frontend
 - **Framework**: Angular 20.3.9
 - **Lenguaje**: TypeScript
 - **Estilos**: CSS3 con efectos modernos
@@ -78,6 +88,13 @@ src/app/
 - **Arquitectura**: Standalone Components
 - **Señales**: Angular Signals
 - **Responsive**: Mobile-first design
+
+### Backend (Planificado)
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Base de Datos**: PostgreSQL
+- **ORM**: Prisma/TypeORM
+- **Autenticación**: JWT
 
 ## 🚀 Instalación y Desarrollo
 
@@ -90,7 +107,7 @@ src/app/
 # Clonar el repositorio
 git clone [repository-url]
 
-# Navegar al directorio
+# Navegar al directorio frontend
 cd agendarte-app
 
 # Instalar dependencias
@@ -114,9 +131,10 @@ Los archivos se generarán en `dist/`
 
 ## 📱 Rutas Principales
 
-- **`/`** - Página principal
+- **`/`** - Página principal (redirige a /admin)
 - **`/admin`** - Dashboard administrativo
 - **`/panel-profesional`** - Panel del profesional médico
+- **`/administrador`** - Panel de administración del sistema
 
 ## 📚 Documentación Específica
 
@@ -125,29 +143,29 @@ Los archivos se generarán en `dist/`
 
 ## 🔄 Próximas Funcionalidades
 
-### 📋 **Módulo Pacientes**
-- [ ] Panel de paciente
-- [ ] Solicitud de citas
-- [ ] Historial médico
-- [ ] Notificaciones
+### 🗄️ **Backend y Base de Datos**
+- [ ] API REST con Node.js/Express
+- [ ] Base de datos PostgreSQL
+- [ ] Autenticación JWT
+- [ ] CRUD de usuarios, profesionales y pacientes
 
-### 📊 **Reportes y Estadísticas**
-- [ ] Dashboard avanzado
-- [ ] Métricas de ocupación
-- [ ] Reportes financieros
-- [ ] Análisis de tendencias
+### 📋 **Funcionalidades Específicas**
+- [ ] Formularios de alta de usuarios
+- [ ] Listados y edición de profesionales
+- [ ] Gestión completa de pacientes
+- [ ] Historial médico
 
 ### 🔔 **Sistema de Notificaciones**
-- [ ] Email automático
+- [ ] Email automático mejorado
 - [ ] SMS recordatorios
 - [ ] Push notifications
 - [ ] Alertas del sistema
 
-### 🔐 **Autenticación y Seguridad**
-- [ ] Login/registro
-- [ ] Roles y permisos
-- [ ] Autenticación JWT
-- [ ] Integración OAuth
+### 📊 **Reportes y Analytics**
+- [ ] Dashboard con métricas avanzadas
+- [ ] Reportes de ocupación
+- [ ] Análisis de tendencias
+- [ ] Exportación de datos
 
 ## 🤝 Contribución
 
