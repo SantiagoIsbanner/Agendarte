@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UsuarioService } from '../../services/usuario.service';
+import { Datepicker } from 'vanillajs-datepicker';
+import 'vanillajs-datepicker/locales/es';
 
 @Component({
   selector: 'app-register-paciente',
@@ -9,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './register-paciente.component.html',
   styleUrl: './register-paciente.component.css'
 })
-export class RegisterPacienteComponent {
+export class RegisterPacienteComponent implements AfterViewInit {
   usuario = {
     mail: '',
     contraseña: '',
@@ -26,7 +29,23 @@ export class RegisterPacienteComponent {
 
   errorMessage = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private usuarioService: UsuarioService
+  ) {}
+
+  ngAfterViewInit() {
+    const elem = document.getElementById('fecha_nacimiento');
+    if (elem) {
+      new Datepicker(elem, {
+        language: 'es',
+        format: 'yyyy-mm-dd',
+        autohide: true,
+        todayHighlight: true,
+        clearBtn: true
+      });
+    }
+  }
 
   onSubmit() {
     if (this.usuario['contraseña'] !== this.usuario['confirmarContraseña']) {
@@ -39,12 +58,35 @@ export class RegisterPacienteComponent {
       return;
     }
 
-    // Aquí iría la lógica para enviar al backend
-    console.log('Registrando paciente:', this.usuario);
-    
-    // Simular registro exitoso
-    alert('Registro exitoso! Redirigiendo al login...');
-    this.router.navigate(['/login']);
+    const edad = this.usuario.fecha_nacimiento ? 
+      new Date().getFullYear() - new Date(this.usuario.fecha_nacimiento).getFullYear() : 0;
+
+    const usuarioData = {
+      mail: this.usuario.mail,
+      contraseña: this.usuario.contraseña,
+      nombre: this.usuario.nombre,
+      apellido: this.usuario.apellido,
+      numero_telefono: this.usuario.numero_telefono,
+      fecha_nacimiento: this.usuario.fecha_nacimiento,
+      edad,
+      rol: this.usuario.rol,
+      dni: this.usuario.dni,
+      sexo: this.usuario.sexo,
+      direccion: this.usuario.direccion,
+      activo: true,
+      created_at: new Date().toISOString()
+    };
+
+    this.usuarioService.createUsuario(usuarioData as any).subscribe({
+      next: (response) => {
+        alert('Registro exitoso! Redirigiendo al login...');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.error || 'Error al registrar usuario';
+        console.error('Error:', error);
+      }
+    });
   }
 
   goBack() {
