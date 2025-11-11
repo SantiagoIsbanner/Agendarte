@@ -1,8 +1,61 @@
+.inicio-header {
+  background: linear-gradient(135deg, #415c6b 0%, #2d4a57 100%);
+  padding: 16px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inicio-header h1 {
+  color: white;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.inicio-header nav a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s;
+}
+
+.inicio-header nav a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .admin-container {
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 200px);
+}
+
+.inicio-footer {
+  background: #2d4a57;
+  padding: 20px 0;
+  margin-top: 40px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+  color: white;
+}
+
+.footer-content p {
+  margin: 0;
+  opacity: 0.9;
 }
 
 /* Reuse admin hero styles to respect the head */
