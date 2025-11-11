@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
 
 export interface Usuario {
   id: number;
@@ -49,6 +50,23 @@ export class UsuarioService {
 
   updateUsuario(usuario: Usuario): Observable<Usuario> {
     return this.http.put<Usuario>(`${this.apiUrl}/usuarios/${usuario.id}`, usuario);
+  }
+
+  /**
+   * Devuelve la lista de especialidades disponibles. Intenta un endpoint dedicado
+   * y si falla, extrae las especialidades de la lista de profesionales.
+   */
+  getEspecialidades(): Observable<string[]> {
+    // El backend expone /api/especialidades que devuelve objetos { id, nombre, descripcion }
+    return this.http.get<any[]>(`${this.apiUrl}/especialidades`).pipe(
+      map(items => items.map(i => i.nombre).filter(Boolean)),
+      catchError(() =>
+        // Fallback: extraer especialidades desde el listado de profesionales
+        this.getProfesionales().pipe(
+          map(profs => Array.from(new Set(profs.filter(p => p.especialidad).map(p => p.especialidad!))))
+        )
+      )
+    );
   }
 
   updatePassword(id: number, contraseñaActual: string, nuevaContraseña: string): Observable<any> {

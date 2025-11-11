@@ -50,22 +50,21 @@ export class PanelPacienteComponent implements OnInit {
   }
 
   private loadProfesionales() {
-    this.usuarioService.getUsuarios().subscribe({
-      next: (usuarios) => {
-        // Filtrar solo profesionales
-        const profesionales = usuarios.filter(u => u.rol === 'profesional');
+    // Cargar profesionales (lista completa)
+    this.usuarioService.getProfesionales().subscribe({
+      next: (profesionales) => {
         this.profesionales.set(profesionales);
         this.profesionalesFiltrados.set(profesionales);
-        
-        // Extraer especialidades únicas
-        const especialidadesUnicas = Array.from(new Set(
-          profesionales
-            .filter(p => p.especialidad)
-            .map(p => p.especialidad!)
-        ));
-        this.especialidades.set(especialidadesUnicas);
       },
       error: (error) => console.error('Error al cargar profesionales:', error)
+    });
+
+    // Obtener especialidades desde el backend (endpoint dedicado) o fallback
+    this.usuarioService.getEspecialidades().subscribe({
+      next: (especialidades) => {
+        this.especialidades.set(especialidades || []);
+      },
+      error: (error) => console.error('Error al cargar especialidades:', error)
     });
   }
 
