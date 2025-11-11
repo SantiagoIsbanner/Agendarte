@@ -42,12 +42,18 @@ export class AdminRolesComponent implements OnInit {
   }
 
   guardarCambios() {
-    this.permisosService.updatePermisos(this.permisos);
-    this.showSuccessModal = true;
-    
-    setTimeout(() => {
-      this.router.navigate(['/gestion-usuarios']);
-    }, 2000);
+    this.permisosService.updatePermisos(this.permisos).subscribe({
+      next: () => {
+        this.showSuccessModal = true;
+        setTimeout(() => {
+          this.router.navigate(['/gestion-usuarios']);
+        }, 2000);
+      },
+      error: (error) => {
+        console.error('Error guardando permisos:', error);
+        alert('Error al guardar los permisos. Verifica que el backend esté corriendo.');
+      }
+    });
   }
 
   volver() {

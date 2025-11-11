@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PermisosService {
+  private apiUrl = 'http://localhost:3000/api';
+  
   private permisos = {
     administrador: {
       admin: true,
@@ -35,14 +39,31 @@ export class PermisosService {
   // Simular usuario logueado (en producción vendría del login)
   private usuarioActual = { rol: 'administrador' };
 
+  constructor(private http: HttpClient) {
+    this.cargarPermisos();
+  }
+
+  cargarPermisos() {
+    this.http.get<any>(`${this.apiUrl}/permisos`).subscribe({
+      next: (permisos) => {
+        this.permisos = permisos;
+        this.permisosSubject.next(this.permisos);
+      },
+      error: (error) => console.error('Error cargando permisos:', error)
+    });
+  }
+
   getPermisos() {
     return this.permisos;
   }
 
-  updatePermisos(nuevosPermisos: any) {
-    this.permisos = { ...nuevosPermisos };
-    this.permisosSubject.next(this.permisos);
-    console.log('Permisos actualizados:', this.permisos);
+  updatePermisos(nuevosPermisos: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/permisos`, { permisos: nuevosPermisos }).pipe(
+      tap(() => {
+        this.permisos = { ...nuevosPermisos };
+        this.permisosSubject.next(this.permisos);
+      })
+    );
   }
 
   tienePermiso(pagina: string): boolean {
