@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,8 +11,10 @@ import { CommonModule } from '@angular/common';
 })
 export class AdministradorComponent {
 
+  constructor(private router: Router) {}
+
   altaUsuario() {
-    alert('Función Alta Usuario - En desarrollo');
+    this.router.navigate(['/gestion-usuarios']);
   }
 
   gestionProfesionales() {

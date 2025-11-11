@@ -1,0 +1,166 @@
+<div class="gestion-container">
+  <div class="header-section">
+    <button class="back-btn" (click)="volver()">← Volver</button>
+    <div class="header-content">
+      <h1>👤 Gestión de Usuarios</h1>
+      <p>Administra roles y permisos de usuarios del sistema</p>
+    </div>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="busqueda" 
+        placeholder="🔍 Buscar por nombre, apellido o email..."
+        class="search-input">
+    </div>
+    
+    <div class="filter-box">
+      <select [(ngModel)]="filtroRol" class="filter-select">
+        <option value="">Todos los roles</option>
+        <option value="administrador">Administrador</option>
+        <option value="profesional">Profesional</option>
+        <option value="usuario">Usuario/Paciente</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="admin-actions">
+    <button class="roles-btn" (click)="irAdminRoles()">
+      ⚙️ Administración de Roles y Permisos
+    </button>
+  </div>
+
+  <div class="users-section">
+    <div class="users-list">
+      <div class="user-card" *ngFor="let usuario of usuariosFiltrados" [class.inactive]="!usuario.activo">
+        <div class="user-main-info">
+          <div class="user-avatar">
+            <span *ngIf="usuario.rol === 'administrador'">⚙️</span>
+            <span *ngIf="usuario.rol === 'profesional'">👨⚕️</span>
+            <span *ngIf="usuario.rol === 'usuario'">👤</span>
+          </div>
+          
+          <div class="user-primary">
+            <div class="user-name-section">
+              <h3>{{ usuario.nombre }} {{ usuario.apellido }}</h3>
+              <div class="user-badges">
+                <span class="role-label" [class]="usuario.rol">
+                  {{ usuario.rol | titlecase }}
+                </span>
+                <span class="user-status" [class.active]="usuario.activo" [class.inactive]="!usuario.activo">
+                  {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="user-contact">
+              <div class="contact-item">
+                <span class="contact-icon">📧</span>
+                <span class="contact-text">{{ usuario.mail }}</span>
+              </div>
+              <div class="contact-item" *ngIf="usuario.numero_telefono">
+                <span class="contact-icon">📞</span>
+                <span class="contact-text">{{ usuario.numero_telefono }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="user-details-section">
+          <div class="detail-item" *ngIf="usuario.dni">
+            <span class="detail-label">DNI:</span>
+            <span class="detail-value">{{ usuario.dni }}</span>
+          </div>
+          <div class="detail-item" *ngIf="usuario.edad">
+            <span class="detail-label">Edad:</span>
+            <span class="detail-value">{{ usuario.edad }} años</span>
+          </div>
+          <div class="detail-item" *ngIf="usuario.sexo">
+            <span class="detail-label">Sexo:</span>
+            <span class="detail-value">{{ usuario.sexo | titlecase }}</span>
+          </div>
+          <div class="detail-item" *ngIf="usuario.direccion">
+            <span class="detail-label">Dirección:</span>
+            <span class="detail-value">{{ usuario.direccion }}</span>
+          </div>
+        </div>
+
+        <div class="user-actions">
+          <div class="action-buttons">
+            <button 
+              class="password-btn" 
+              (click)="abrirCambioPassword(usuario)"
+              title="Cambiar contraseña">
+              🔑
+            </button>
+            
+            <button 
+              class="toggle-btn" 
+              [class.activate]="!usuario.activo"
+              [class.deactivate]="usuario.activo"
+              (click)="toggleActivo(usuario)">
+              {{ usuario.activo ? 'Desactivar' : 'Activar' }}
+            </button>
+            
+            <button 
+              class="delete-btn" 
+              (click)="eliminarUsuario(usuario)"
+              [disabled]="usuario.rol === 'administrador'"
+              title="Eliminar usuario">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="usuariosFiltrados.length === 0">
+      <div class="empty-icon">🔍</div>
+      <h3>No se encontraron usuarios</h3>
+      <p>Intenta ajustar los filtros de búsqueda</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de cambio de contraseña -->
+<div class="modal-overlay" *ngIf="showPasswordModal" (click)="cerrarPasswordModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>🔑 Cambiar Contraseña</h3>
+      <button class="close-modal" (click)="cerrarPasswordModal()">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <p><strong>Usuario:</strong> {{ selectedUser?.nombre }} {{ selectedUser?.apellido }}</p>
+      
+      <div class="form-group">
+        <label>Nueva Contraseña:</label>
+        <input 
+          type="password" 
+          [(ngModel)]="newPassword" 
+          placeholder="Mínimo 6 caracteres"
+          class="password-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Confirmar Contraseña:</label>
+        <input 
+          type="password" 
+          [(ngModel)]="confirmPassword" 
+          placeholder="Repita la contraseña"
+          class="password-input">
+      </div>
+      
+      <div class="error-message" *ngIf="passwordError">
+        {{ passwordError }}
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="cerrarPasswordModal()">Cancelar</button>
+      <button class="save-btn" (click)="cambiarPassword()">Cambiar Contraseña</button>
+    </div>
+  </div>
+</div>
