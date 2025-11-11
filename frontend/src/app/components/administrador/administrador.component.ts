@@ -22,6 +22,6 @@ export class AdministradorComponent {
   }
 
   gestionPacientes() {
-    alert('Gestión de Pacientes - En desarrollo');
+    this.router.navigate(['/gestion-pacientes']);
   }
 }
