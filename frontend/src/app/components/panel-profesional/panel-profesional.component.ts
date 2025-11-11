@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GoogleCalendarService } from '../../services/google-calendar.service';
+import { UsuarioService, Usuario } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-panel-profesional',
@@ -17,7 +18,8 @@ export class PanelProfesionalComponent implements OnInit {
   protected readonly showEventModal = signal(false);
   protected readonly isConnecting = signal(false);
   protected readonly selectedEvent = signal<any>(null);
-  protected isEditing = false; 
+  protected readonly pacientes = signal<Usuario[]>([]);
+  protected isEditing = false;
   protected editingEventId: string = '';
   
   protected newAppointment = {
@@ -31,12 +33,23 @@ export class PanelProfesionalComponent implements OnInit {
   
   private calendar: any;
   
-  constructor(private googleCalendarService: GoogleCalendarService) {}
+  constructor(
+    private googleCalendarService: GoogleCalendarService,
+    private usuarioService: UsuarioService
+  ) {}
 
   ngOnInit() {
     this.initializeCalendar();
     // Verificar si ya está autenticado
     this.isAuthenticated.set(this.googleCalendarService.isSignedIn());
+    // Cargar pacientes
+    this.loadPacientes();
+  }
+
+  private loadPacientes() {
+    this.usuarioService.getPacientes().subscribe(pacientes => {
+      this.pacientes.set(pacientes);
+    });
   }
 
   private initializeCalendar() {
@@ -278,6 +291,17 @@ export class PanelProfesionalComponent implements OnInit {
     this.showModal.set(true);
     // Establecer fecha actual por defecto
     this.newAppointment.date = new Date().toISOString().split('T')[0];
+    // Recargar pacientes por si hay nuevos
+    this.loadPacientes();
+  }
+
+  onPacienteChange(event: any) {
+    const pacienteId = parseInt(event.target.value);
+    const paciente = this.pacientes().find(p => p.id === pacienteId);
+    if (paciente) {
+      this.newAppointment.patient = `${paciente.nombre} ${paciente.apellido}`;
+      this.newAppointment.email = paciente.mail;
+    }
   }
   
   closeModal() {

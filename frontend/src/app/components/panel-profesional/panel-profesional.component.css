@@ -251,6 +251,16 @@
   resize: vertical;
 }
 
+.no-pacientes {
+  color: #ef4444;
+  font-weight: 500;
+  padding: 10px;
+  background: #fee2e2;
+  border-radius: 6px;
+  text-align: center;
+  margin: 0;
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end;

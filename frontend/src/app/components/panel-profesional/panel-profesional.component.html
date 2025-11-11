@@ -77,11 +77,20 @@
         <div class="modal-body">
           <div class="form-group">
             <label>Paciente: *</label>
-            <input type="text" [(ngModel)]="newAppointment.patient" placeholder="Nombre del paciente" required>
+            @if (pacientes().length > 0) {
+              <select (change)="onPacienteChange($event)" required>
+                <option value="">Seleccione un paciente</option>
+                @for (paciente of pacientes(); track paciente.id) {
+                  <option [value]="paciente.id">{{ paciente.nombre }} {{ paciente.apellido }}</option>
+                }
+              </select>
+            } @else {
+              <p class="no-pacientes">Sin pacientes registrados</p>
+            }
           </div>
           <div class="form-group">
             <label>Email del paciente: *</label>
-            <input type="email" [(ngModel)]="newAppointment.email" placeholder="email@ejemplo.com" required>
+            <input type="email" [(ngModel)]="newAppointment.email" placeholder="email@ejemplo.com" [readonly]="true" required>
           </div>
           <div class="form-group">
             <label>Fecha: *</label>

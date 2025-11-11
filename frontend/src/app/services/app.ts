@@ -23,7 +23,7 @@ export class App implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.isLoginPage.set(event.url === '/login' || event.url.startsWith('/register'));
+      this.isLoginPage.set(event.url === '/' || event.url === '/login' || event.url.startsWith('/register'));
     });
   }
 
