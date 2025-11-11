@@ -14,6 +14,7 @@ export interface Usuario {
   dni?: string;
   sexo?: 'masculino' | 'femenino' | 'otro';
   direccion?: string;
+  especialidad?: string;
   created_at: string;
 }
 
@@ -35,6 +36,7 @@ export class UsuarioService {
       dni: '12345678',
       sexo: 'masculino',
       direccion: 'Sistema Agendarte, CABA',
+      especialidad: 'General',
       created_at: '2024-01-01T00:00:00Z'
     }
   ];

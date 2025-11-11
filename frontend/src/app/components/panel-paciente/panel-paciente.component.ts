@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GoogleCalendarService } from '../../services/google-calendar.service';
+import { UsuarioService, Usuario } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-panel-paciente',
@@ -14,17 +15,84 @@ export class PanelPacienteComponent implements OnInit {
   protected readonly isAuthenticated = signal(false);
   protected readonly events = signal<any[]>([]);
   protected readonly showEventModal = signal(false);
+  protected readonly showModal = signal(false);
   protected readonly isConnecting = signal(false);
   protected readonly selectedEvent = signal<any>(null);
+  protected readonly profesionales = signal<Usuario[]>([]);
+  protected readonly especialidades = signal<string[]>([]);
+  protected readonly profesionalesFiltrados = signal<Usuario[]>([]);
+  
+  protected especialidadSeleccionada = '';
+
+  protected newAppointment = {
+    profesional_id: '',
+    especialidad: '',
+    mail: '',
+    fecha: '',
+    hora: '',
+    duracion: '60',
+    notas: ''
+  };
 
   private calendar: any;
 
-  constructor(private googleCalendarService: GoogleCalendarService) {}
+  constructor(
+    private googleCalendarService: GoogleCalendarService,
+    private usuarioService: UsuarioService
+  ) {}
 
   ngOnInit() {
     this.initializeCalendar();
     // Verificar si ya está autenticado
     this.isAuthenticated.set(this.googleCalendarService.isSignedIn());
+    // Cargar profesionales
+    this.loadProfesionales();
+  }
+
+  private loadProfesionales() {
+    this.usuarioService.getUsuarios().subscribe({
+      next: (usuarios) => {
+        // Filtrar solo profesionales
+        const profesionales = usuarios.filter(u => u.rol === 'profesional');
+        this.profesionales.set(profesionales);
+        this.profesionalesFiltrados.set(profesionales);
+        
+        // Extraer especialidades únicas
+        const especialidadesUnicas = Array.from(new Set(
+          profesionales
+            .filter(p => p.especialidad)
+            .map(p => p.especialidad!)
+        ));
+        this.especialidades.set(especialidadesUnicas);
+      },
+      error: (error) => console.error('Error al cargar profesionales:', error)
+    });
+  }
+
+  filtrarPorEspecialidad(especialidad: string) {
+    this.especialidadSeleccionada = especialidad;
+    this.newAppointment.especialidad = especialidad;
+    
+    if (especialidad === '') {
+      this.profesionalesFiltrados.set(this.profesionales());
+    } else {
+      const filtrados = this.profesionales().filter(p => p.especialidad === especialidad);
+      this.profesionalesFiltrados.set(filtrados);
+    }
+    
+    // Resetear selección de profesional y mail cuando se cambia especialidad
+    this.newAppointment.profesional_id = '';
+    this.newAppointment.mail = '';
+  }
+
+  onProfesionalChange(profesionalId: string) {
+    this.newAppointment.profesional_id = profesionalId;
+    
+    // Auto-llenar el email del profesional seleccionado
+    const profesional = this.profesionales().find(p => p.id.toString() === profesionalId);
+    if (profesional) {
+      this.newAppointment.mail = profesional.mail;
+    }
   }
 
   private initializeCalendar() {
@@ -181,5 +249,104 @@ export class PanelPacienteComponent implements OnInit {
     } catch (error) {
       alert('Error al cancelar la cita');
     }
+  }
+
+  showNewAppointmentModal() {
+    this.showModal.set(true);
+    // Establecer fecha actual por defecto
+    this.newAppointment.fecha = new Date().toISOString().split('T')[0];
+    this.especialidadSeleccionada = '';
+  }
+
+  closeModal() {
+    this.showModal.set(false);
+    this.resetForm();
+  }
+
+  async saveAppointment() {
+    if (!this.newAppointment.profesional_id || !this.newAppointment.fecha || !this.newAppointment.hora) {
+      alert('Por favor completa todos los campos obligatorios (*).');
+      return;
+    }
+
+    const profesionalSeleccionado = this.profesionales().find(p => p.id.toString() === this.newAppointment.profesional_id);
+    if (!profesionalSeleccionado) {
+      alert('Profesional no válido');
+      return;
+    }
+
+    const startDateTime = `${this.newAppointment.fecha}T${this.newAppointment.hora}:00`;
+    const endTime = new Date(startDateTime);
+    endTime.setMinutes(endTime.getMinutes() + parseInt(this.newAppointment.duracion));
+
+    const googleEvent = {
+      summary: `Cita - ${profesionalSeleccionado.nombre} ${profesionalSeleccionado.apellido}`,
+      start: {
+        dateTime: new Date(startDateTime).toISOString(),
+        timeZone: 'America/Argentina/Buenos_Aires'
+      },
+      end: {
+        dateTime: endTime.toISOString(),
+        timeZone: 'America/Argentina/Buenos_Aires'
+      },
+      description: this.newAppointment.notas || 'Cita médica',
+      attendees: [
+        {
+          email: profesionalSeleccionado.mail
+        }
+      ]
+    };
+
+    try {
+      let result: any = null;
+
+      if (this.isAuthenticated()) {
+        result = await this.googleCalendarService.createEvent(googleEvent);
+
+        if (result?.error) {
+          throw new Error(result.error.message || 'Error desconocido');
+        }
+      } else {
+        alert('Debes estar conectado a Google Calendar para guardar el evento');
+        return;
+      }
+
+      const newEvent = {
+        title: `Cita - ${profesionalSeleccionado.nombre} ${profesionalSeleccionado.apellido}`,
+        start: startDateTime,
+        end: endTime.toISOString(),
+        extendedProps: {
+          notas: this.newAppointment.notas,
+          profesional: profesionalSeleccionado.nombre + ' ' + profesionalSeleccionado.apellido,
+          googleId: result?.id
+        }
+      };
+
+      const currentEvents = this.events();
+      this.events.set([...currentEvents, newEvent]);
+
+      if (this.calendar) {
+        this.calendar.addEvent(newEvent);
+      }
+
+      alert(`Cita creada exitosamente con ${profesionalSeleccionado.nombre} ${profesionalSeleccionado.apellido}.\nSe ha enviado una invitación por email a: ${profesionalSeleccionado.mail}`);
+
+      this.closeModal();
+    } catch (error) {
+      console.error('Error al guardar la cita:', error);
+      alert('Error al guardar la cita en Google Calendar');
+    }
+  }
+
+  private resetForm() {
+    this.newAppointment = {
+      profesional_id: '',
+      especialidad: '',
+      mail: '',
+      fecha: '',
+      hora: '',
+      duracion: '60',
+      notas: ''
+    };
   }
 }

@@ -21,6 +21,10 @@
   <!-- Action Bar -->
   <div class="action-bar">
     <div class="action-group">
+      <button class="btn-modern primary" (click)="showNewAppointmentModal()">
+        <span class="btn-icon">➕</span>
+        <span>Nueva Cita</span>
+      </button>
       <button class="btn-modern secondary" (click)="loadCalendar()" [disabled]="!isAuthenticated()">
         <span class="btn-icon">🔄</span>
         <span>Actualizar Citas</span>
@@ -97,6 +101,66 @@
         <div class="modal-footer">
           <button class="btn danger" (click)="cancelAppointment()">❌ Cancelar Cita</button>
           <button class="btn" (click)="closeEventModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal para crear nueva cita -->
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>➕ Nueva Cita Médica</h3>
+          <button class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Especialidad:</label>
+            <select [(ngModel)]="especialidadSeleccionada" (change)="filtrarPorEspecialidad(especialidadSeleccionada)">
+              <option value="">Todas las especialidades</option>
+              @for (esp of especialidades(); track esp) {
+                <option [value]="esp">{{ esp }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Profesional: *</label>
+            <select [(ngModel)]="newAppointment.profesional_id" (change)="onProfesionalChange(newAppointment.profesional_id)" required>
+              <option value="">Selecciona un profesional</option>
+              @for (prof of profesionalesFiltrados(); track prof.id) {
+                <option [value]="prof.id.toString()">{{ prof.nombre }} {{ prof.apellido }}{{ prof.especialidad ? ' - ' + prof.especialidad : '' }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Email del Profesional:</label>
+            <input type="email" [(ngModel)]="newAppointment.mail" readonly placeholder="Se auto-completa al seleccionar profesional">
+          </div>
+          <div class="form-group">
+            <label>Fecha: *</label>
+            <input type="date" [(ngModel)]="newAppointment.fecha" required>
+          </div>
+          <div class="form-group">
+            <label>Hora: *</label>
+            <input type="time" [(ngModel)]="newAppointment.hora" required>
+          </div>
+          <div class="form-group">
+            <label>Duración:</label>
+            <select [(ngModel)]="newAppointment.duracion">
+              <option value="30">30 minutos</option>
+              <option value="60">1 hora</option>
+              <option value="90">1.5 horas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Notas:</label>
+            <textarea [(ngModel)]="newAppointment.notas" placeholder="Notas adicionales (síntomas, alergias, etc.)"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" (click)="closeModal()">Cancelar</button>
+          <button class="btn success" (click)="saveAppointment()">💾 Guardar Cita</button>
         </div>
       </div>
     </div>

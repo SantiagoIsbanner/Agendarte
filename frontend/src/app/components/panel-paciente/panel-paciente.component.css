@@ -145,6 +145,17 @@
   box-sizing: border-box;
 }
 
+.form-group input[readonly] {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: default;
+}
+
+.form-group input[readonly]:focus {
+  outline: none;
+  border-color: #d1d5db;
+}
+
 .form-group textarea {
   height: 80px;
   resize: vertical;
