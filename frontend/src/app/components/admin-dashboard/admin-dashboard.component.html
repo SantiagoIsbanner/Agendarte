@@ -1,7 +1,17 @@
 <div class="dashboard-content">
   <div class="welcome-section">
-    <h2>Bienvenido al Dashboard</h2>
-    <p>Sistema de gestión de turnos médicos</p>
+    <div class="welcome-text">
+      <h2>Bienvenido al Dashboard</h2>
+      <p>Sistema de gestión de turnos médicos</p>
+    </div>
+    <div class="profile-actions">
+      <button class="btn-profile" (click)="editarPerfil()">
+        <span>✏️</span> Editar Perfil
+      </button>
+      <button class="btn-profile" (click)="cambiarContrasena()">
+        <span>🔒</span> Cambiar Contraseña
+      </button>
+    </div>
   </div>
   
   <div class="stats-grid">

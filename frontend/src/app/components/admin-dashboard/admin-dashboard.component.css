@@ -3,7 +3,9 @@
 }
 
 .welcome-section {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 3rem;
   color: white;
   background: #415c6b;
@@ -11,6 +13,10 @@
   border-radius: 15px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.welcome-text {
+  text-align: left;
 }
 
 .welcome-section h2 {
@@ -22,6 +28,31 @@
 .welcome-section p {
   font-size: 1.1rem;
   opacity: 0.9;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-profile:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 .stats-grid {
@@ -72,5 +103,24 @@
   .sidebar {
     width: 280px;
     left: -280px;
+  }
+
+  .welcome-section {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .welcome-text {
+    text-align: center;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-profile {
+    width: 100%;
+    justify-content: center;
   }
 }

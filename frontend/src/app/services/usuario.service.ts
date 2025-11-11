@@ -59,4 +59,8 @@ export class UsuarioService {
     }
     return of(false);
   }
+
+  getPacientes(): Observable<Usuario[]> {
+    return of(this.usuarios.filter(u => u.rol === 'usuario'));
+  }
 }

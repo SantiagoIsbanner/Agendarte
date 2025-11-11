@@ -8,4 +8,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent {
+  editarPerfil() {
+    alert('Funcionalidad de editar perfil');
+  }
+
+  cambiarContrasena() {
+    alert('Funcionalidad de cambiar contraseña');
+  }
 }
