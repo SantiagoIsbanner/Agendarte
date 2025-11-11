@@ -17,7 +17,7 @@ export class PanelProfesionalComponent implements OnInit {
   protected readonly showEventModal = signal(false);
   protected readonly isConnecting = signal(false);
   protected readonly selectedEvent = signal<any>(null);
-  protected isEditing = false;
+  protected isEditing = false; 
   protected editingEventId: string = '';
   
   protected newAppointment = {
