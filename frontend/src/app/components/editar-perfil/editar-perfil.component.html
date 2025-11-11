@@ -66,7 +66,12 @@
         <div class="form-row">
           <div class="form-group">
             <label>Especialidad *</label>
-            <input type="text" [(ngModel)]="profesional.especialidad" name="especialidad" required>
+            <select [(ngModel)]="profesional.especialidad" name="especialidad" required>
+              <option value="">Selecciona una especialidad</option>
+              @for (esp of especialidades; track esp.id) {
+                <option [value]="esp.nombre">{{ esp.nombre }}</option>
+              }
+            </select>
           </div>
           <div class="form-group">
             <label>Sub-especialidad</label>
@@ -105,3 +110,13 @@
     </div>
   </form>
 </div>
+
+<!-- Modal de éxito -->
+@if (showSuccessModal) {
+  <div class="modal-overlay">
+    <div class="success-modal">
+      <div class="success-icon">✅</div>
+      <h3>Perfil actualizado exitosamente</h3>
+    </div>
+  </div>
+}

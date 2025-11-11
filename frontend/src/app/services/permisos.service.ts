@@ -81,8 +81,8 @@ export class PermisosService {
     const menuItems = [
       { key: 'admin', label: 'Inicio', icon: '🏠', href: '/panel' },
       { key: 'panel-paciente', label: 'Panel Paciente', icon: '👤', href: '/panel-paciente' },
-      { key: 'mis-turnos', label: 'Mis Turnos', icon: '📅', href: '/mis-turnos' },
       { key: 'panel-profesional', label: 'Panel Profesional', icon: '👨⚕️', href: '/panel-profesional' },
+      { key: 'mis-turnos', label: 'Mis Turnos', icon: '📅', href: '/mis-turnos' },
       { key: 'administrador', label: 'Administrador', icon: '⚙️', href: '/administrador' }
     ];
 
