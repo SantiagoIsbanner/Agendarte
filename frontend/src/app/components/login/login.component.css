@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #415c6b 0%, #2d4a57 100%);
   padding: 20px;
 }
 
@@ -60,7 +60,7 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #415c6b;
 }
 
 .error-message {
@@ -73,7 +73,7 @@
 }
 
 .login-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #415c6b 0%, #2d4a57 100%);
   color: white;
   border: none;
   padding: 14px;
@@ -102,8 +102,8 @@
 
 .register-btn {
   background: transparent;
-  color: #667eea;
-  border: 2px solid #667eea;
+  color: #415c6b;
+  border: 2px solid #415c6b;
   padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
@@ -112,7 +112,7 @@
 }
 
 .register-btn:hover {
-  background: #667eea;
+  background: #415c6b;
   color: white;
 }
 
@@ -186,7 +186,7 @@
 }
 
 .role-btn:hover {
-  border-color: #667eea;
+  border-color: #415c6b;
   transform: translateY(-2px);
 }
 

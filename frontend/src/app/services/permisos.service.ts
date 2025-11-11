@@ -36,8 +36,13 @@ export class PermisosService {
   private permisosSubject = new BehaviorSubject(this.permisos);
   permisos$ = this.permisosSubject.asObservable();
 
-  // Simular usuario logueado (en producción vendría del login)
-  private usuarioActual = { rol: 'administrador' };
+  private getUsuarioActual() {
+    const usuario = localStorage.getItem('usuario');
+    if (usuario) {
+      return JSON.parse(usuario);
+    }
+    return { rol: 'usuario' };
+  }
 
   constructor(private http: HttpClient) {
     this.cargarPermisos();
@@ -67,8 +72,9 @@ export class PermisosService {
   }
 
   tienePermiso(pagina: string): boolean {
-    const rol = this.usuarioActual.rol as keyof typeof this.permisos;
-    return this.permisos[rol][pagina as keyof typeof this.permisos.administrador] || false;
+    const usuario = this.getUsuarioActual();
+    const rol = usuario.rol as keyof typeof this.permisos;
+    return this.permisos[rol]?.[pagina as keyof typeof this.permisos.administrador] || false;
   }
 
   getMenuItems() {

@@ -71,36 +71,69 @@
     <div class="modal-overlay" (click)="closeEventModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>📅 Detalles de la Cita</h3>
+          <h3>📅 {{ isEditingEvent() ? 'Editar Cita' : 'Detalles de la Cita' }}</h3>
           <button class="close-btn" (click)="closeEventModal()">✕</button>
         </div>
         <div class="modal-body">
-          <div class="event-details">
-            <div class="detail-item">
-              <strong>Cita:</strong>
-              <span>{{ selectedEvent()?.title }}</span>
+          @if (isEditingEvent()) {
+            <div class="form-group">
+              <label>Título: *</label>
+              <input type="text" [(ngModel)]="editEventData.title" required>
             </div>
-            <div class="detail-item">
-              <strong>Fecha:</strong>
-              <span>{{ formatDate(selectedEvent()?.start) }}</span>
+            <div class="form-group">
+              <label>Fecha: *</label>
+              <input type="date" [(ngModel)]="editEventData.fecha" required>
             </div>
-            <div class="detail-item">
-              <strong>Hora:</strong>
-              <span>{{ formatTime(selectedEvent()?.start) }} - {{ formatTime(selectedEvent()?.end) }}</span>
+            <div class="form-group">
+              <label>Hora: *</label>
+              <input type="time" [(ngModel)]="editEventData.hora" required>
             </div>
-            <div class="detail-item">
-              <strong>Descripción:</strong>
-              <span>{{ selectedEvent()?.extendedProps?.description || 'Sin descripción' }}</span>
+            <div class="form-group">
+              <label>Duración:</label>
+              <select [(ngModel)]="editEventData.duracion">
+                <option value="30">30 minutos</option>
+                <option value="60">1 hora</option>
+                <option value="90">1.5 horas</option>
+              </select>
             </div>
-            <div class="detail-item">
-              <strong>Ubicación:</strong>
-              <span>{{ selectedEvent()?.extendedProps?.location || 'No especificada' }}</span>
+            <div class="form-group">
+              <label>Notas:</label>
+              <textarea [(ngModel)]="editEventData.notas" placeholder="Notas adicionales"></textarea>
             </div>
-          </div>
+          } @else {
+            <div class="event-details">
+              <div class="detail-item">
+                <strong>Cita:</strong>
+                <span>{{ selectedEvent()?.title }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>Fecha:</strong>
+                <span>{{ formatDate(selectedEvent()?.start) }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>Hora:</strong>
+                <span>{{ formatTime(selectedEvent()?.start) }} - {{ formatTime(selectedEvent()?.end) }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>Descripción:</strong>
+                <span>{{ selectedEvent()?.extendedProps?.description || 'Sin descripción' }}</span>
+              </div>
+              <div class="detail-item">
+                <strong>Ubicación:</strong>
+                <span>{{ selectedEvent()?.extendedProps?.location || 'No especificada' }}</span>
+              </div>
+            </div>
+          }
         </div>
         <div class="modal-footer">
-          <button class="btn danger" (click)="cancelAppointment()">❌ Cancelar Cita</button>
-          <button class="btn" (click)="closeEventModal()">Cerrar</button>
+          @if (isEditingEvent()) {
+            <button class="btn" (click)="isEditingEvent.set(false)">Cancelar</button>
+            <button class="btn success" (click)="saveEditedEvent()">💾 Guardar</button>
+          } @else {
+            <button class="btn danger" (click)="deleteAppointment()">🗑️ Eliminar</button>
+            <button class="btn primary" (click)="startEditEvent()">✏️ Editar</button>
+            <button class="btn" (click)="closeEventModal()">Cerrar</button>
+          }
         </div>
       </div>
     </div>
@@ -160,7 +193,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn" (click)="closeModal()">Cancelar</button>
-          <button class="btn success" (click)="saveAppointment()">💾 Guardar Cita</button>
+          <button class="btn success" (click)="saveAppointment()">💾 Crear Cita</button>
         </div>
       </div>
     </div>
