@@ -1,0 +1,104 @@
+<div class="panel-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-icon">🩺</div>
+      <h1>Mis Citas Médicas</h1>
+      <p>Visualiza y gestiona tus citas programadas</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ getUpcomingAppointments() }}</span>
+        <span class="stat-label">Citas Próximas</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ isAuthenticated() ? '✓' : '✗' }}</span>
+        <span class="stat-label">Google Sync</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <div class="action-group">
+      <button class="btn-modern secondary" (click)="loadCalendar()" [disabled]="!isAuthenticated()">
+        <span class="btn-icon">🔄</span>
+        <span>Actualizar Citas</span>
+      </button>
+    </div>
+
+    <div class="connection-status">
+      @if (isAuthenticated()) {
+        <div class="status-badge connected">
+          <span class="status-dot"></span>
+          <span>Google Calendar Conectado</span>
+        </div>
+      } @else {
+        <button class="btn-modern google" (click)="authenticate()" [disabled]="isConnecting()">
+          @if (isConnecting()) {
+            <span class="btn-icon spinning">⟳</span>
+            <span>Conectando...</span>
+          } @else {
+            <span class="btn-icon">🔗</span>
+            <span>Conectar Google</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Calendar Section -->
+  <div class="calendar-section">
+    <div class="section-header">
+      <h2>📅 Calendario de Citas</h2>
+      <div class="calendar-controls">
+        <button class="control-btn active">Mes</button>
+        <button class="control-btn">Semana</button>
+        <button class="control-btn">Día</button>
+      </div>
+    </div>
+    <div class="calendar-wrapper">
+      <div id="calendar"></div>
+    </div>
+  </div>
+
+  <!-- Modal para detalles de la cita -->
+  @if (showEventModal()) {
+    <div class="modal-overlay" (click)="closeEventModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>📅 Detalles de la Cita</h3>
+          <button class="close-btn" (click)="closeEventModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="event-details">
+            <div class="detail-item">
+              <strong>Cita:</strong>
+              <span>{{ selectedEvent()?.title }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Fecha:</strong>
+              <span>{{ formatDate(selectedEvent()?.start) }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Hora:</strong>
+              <span>{{ formatTime(selectedEvent()?.start) }} - {{ formatTime(selectedEvent()?.end) }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Descripción:</strong>
+              <span>{{ selectedEvent()?.extendedProps?.description || 'Sin descripción' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Ubicación:</strong>
+              <span>{{ selectedEvent()?.extendedProps?.location || 'No especificada' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn danger" (click)="cancelAppointment()">❌ Cancelar Cita</button>
+          <button class="btn" (click)="closeEventModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
