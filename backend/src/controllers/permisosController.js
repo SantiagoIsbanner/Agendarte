@@ -1,4 +1,5 @@
 const pool = require('../config/database');
+const permisosService = require('../services/permisosService');
 
 const getPermisos = async (req, res) => {
   try {
@@ -48,4 +49,13 @@ const updatePermisos = async (req, res) => {
   }
 };
 
-module.exports = { getPermisos, updatePermisos };
+const getAllPermisos = async (req, res) => {
+  try {
+    const permisos = await permisosService.getAllPermisos();
+    res.json(permisos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { getPermisos, updatePermisos, getAllPermisos };

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 export interface Usuario {
   id: number;
@@ -21,46 +22,39 @@ export interface Usuario {
   providedIn: 'root'
 })
 export class UsuarioService {
-  private usuarios: Usuario[] = [
-    {
-      id: 1,
-      mail: 'admin@agendarte.com',
-      nombre: 'Administrador',
-      apellido: 'Sistema',
-      numero_telefono: '+54 11 1234-5678',
-      fecha_nacimiento: '1990-01-01',
-      edad: 34,
-      rol: 'administrador',
-      activo: true,
-      dni: '12345678',
-      sexo: 'masculino',
-      direccion: 'Sistema Agendarte, CABA',
-      created_at: '2024-01-01T00:00:00Z'
-    }
-  ];
+  private apiUrl = 'http://localhost:3000/api';
+
+  constructor(private http: HttpClient) {}
 
   getUsuarios(): Observable<Usuario[]> {
-    return of(this.usuarios);
+    return this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`);
   }
 
-  updateUsuario(usuario: Usuario): Observable<Usuario> {
-    const index = this.usuarios.findIndex(u => u.id === usuario.id);
-    if (index !== -1) {
-      this.usuarios[index] = { ...usuario };
-    }
-    return of(usuario);
-  }
-
-  deleteUsuario(id: number): Observable<boolean> {
-    const index = this.usuarios.findIndex(u => u.id === id);
-    if (index !== -1) {
-      this.usuarios.splice(index, 1);
-      return of(true);
-    }
-    return of(false);
+  getUsuarioById(id: number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.apiUrl}/usuarios/${id}`);
   }
 
   getPacientes(): Observable<Usuario[]> {
-    return of(this.usuarios.filter(u => u.rol === 'usuario'));
+    return this.http.get<Usuario[]>(`${this.apiUrl}/usuarios/pacientes`);
+  }
+
+  getProfesionales(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`${this.apiUrl}/usuarios/profesionales`);
+  }
+
+  createUsuario(usuario: Usuario): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.apiUrl}/usuarios`, usuario);
+  }
+
+  updateUsuario(usuario: Usuario): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.apiUrl}/usuarios/${usuario.id}`, usuario);
+  }
+
+  updatePassword(id: number, contraseñaActual: string, nuevaContraseña: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/usuarios/${id}/password`, { contraseñaActual, nuevaContraseña });
+  }
+
+  deleteUsuario(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/usuarios/${id}`);
   }
 }
