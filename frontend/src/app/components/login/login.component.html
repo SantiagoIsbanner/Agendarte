@@ -1,0 +1,73 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>🏥 Agendarte</h1>
+      <p>Sistema de Gestión de Turnos Médicos</p>
+    </div>
+    
+    <form (ngSubmit)="onLogin()" class="login-form">
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <input 
+          type="text" 
+          id="username" 
+          [(ngModel)]="username" 
+          name="username"
+          placeholder="Ingrese su usuario"
+          required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="Ingrese su contraseña"
+          required>
+      </div>
+      
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+      
+      <button type="submit" class="login-btn">Iniciar Sesión</button>
+    </form>
+    
+    <div class="register-section">
+      <p>¿No tienes cuenta?</p>
+      <button type="button" class="register-btn" (click)="openRegisterModal()">
+        Registrarse
+      </button>
+    </div>
+    
+    <div class="login-footer">
+      <small>Usuario: admin | Contraseña: admin</small>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de selección de rol -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Selecciona tu tipo de registro</h3>
+      <button class="close-modal" (click)="closeModal()">×</button>
+    </div>
+    
+    <div class="role-options">
+      <button class="role-btn patient" (click)="registerAs('paciente')">
+        <div class="role-icon">👥</div>
+        <h4>Paciente</h4>
+        <p>Registrarse para agendar turnos</p>
+      </button>
+      
+      <button class="role-btn professional" (click)="registerAs('profesional')">
+        <div class="role-icon">👨⚕️</div>
+        <h4>Profesional</h4>
+        <p>Registrarse como médico o especialista</p>
+      </button>
+    </div>
+  </div>
+</div>

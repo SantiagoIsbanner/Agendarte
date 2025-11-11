@@ -151,6 +151,10 @@
   min-height: calc(100vh - 80px);
 }
 
+.main-content.full-screen {
+  min-height: 100vh;
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 1rem;

@@ -1,45 +1,41 @@
 
 <div class="app-container">
-  <!-- Header con menú hamburguesa -->
-  <header class="header">
-    <div class="header-left">
-      <button class="hamburger-btn" (click)="toggleMenu()">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-      <h1 class="header-title">Agendarte - Sistema Médico</h1>
-    </div>
-
-    <!-- Mostrar botón Iniciar sesión solo cuando estamos en la página Inicio -->
-    <a *ngIf="showLoginButton()" class="header-login-btn" routerLink="/login">Iniciar sesión</a>
+  <!-- Header con menú hamburguesa (oculto en login) -->
+  <header class="header" *ngIf="!isLoginPage()">
+    <button class="hamburger-btn" (click)="toggleMenu()">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+    <h1 class="header-title">Agendarte - Sistema Médico</h1>
   </header>
 
-  <!-- Overlay para cerrar menú -->
+  <!-- Overlay para cerrar menú (oculto en login) -->
   <div 
     class="overlay" 
     [class.active]="isMenuOpen()"
-    (click)="closeMenu()">
+    (click)="closeMenu()"
+    *ngIf="!isLoginPage()">
   </div>
 
-  <!-- Menú lateral -->
-  <nav class="sidebar" [class.open]="isMenuOpen()">
+  <!-- Menú lateral (oculto en login) -->
+  <nav class="sidebar" [class.open]="isMenuOpen()" *ngIf="!isLoginPage()">
     <div class="sidebar-header">
       <h2>Menú</h2>
       <button class="close-btn" (click)="closeMenu()">×</button>
     </div>
     <ul class="menu-list">
-      <li><a href="/admin" (click)="closeMenu()">Inicio</a></li>
-      <li><a href="#" (click)="closeMenu()">Panel Paciente</a></li>
-      <li><a href="#" (click)="closeMenu()">Mis Turnos</a></li>
-      <li><a href="/panel-profesional" (click)="closeMenu()">Panel Profesional</a></li>
-      <li><a href="/administrador" (click)="closeMenu()">Administrador</a></li>
-      <li><a href="#" (click)="closeMenu()">Cerrar Sesión</a></li>
+      <li *ngFor="let item of menuItems()">
+        <a [href]="item.href" (click)="closeMenu()">
+          {{ item.icon }} {{ item.label }}
+        </a>
+      </li>
+      <li><a href="#" (click)="logout()">🚪 Cerrar Sesión</a></li>
     </ul>
   </nav>
 
   <!-- Contenido de las páginas -->
-  <main class="main-content">
+  <main class="main-content" [class.full-screen]="isLoginPage()">
     <router-outlet />
   </main>
 </div>
