@@ -48,12 +48,16 @@ export class RegisterProfesionalComponent implements AfterViewInit {
   ngAfterViewInit() {
     const elem = document.getElementById('fecha_nacimiento');
     if (elem) {
-      new Datepicker(elem, {
+      const datepicker = new Datepicker(elem, {
         language: 'es',
         format: 'yyyy-mm-dd',
         autohide: true,
         todayHighlight: true,
         clearBtn: true
+      });
+      
+      elem.addEventListener('changeDate', (e: any) => {
+        this.usuario.fecha_nacimiento = e.target.value;
       });
     }
   }
@@ -78,13 +82,13 @@ export class RegisterProfesionalComponent implements AfterViewInit {
       contraseña: this.usuario.contraseña,
       nombre: this.usuario.nombre,
       apellido: this.usuario.apellido,
-      numero_telefono: this.usuario.numero_telefono,
-      fecha_nacimiento: this.usuario.fecha_nacimiento,
+      numero_telefono: this.usuario.numero_telefono || null,
+      fecha_nacimiento: this.usuario.fecha_nacimiento || null,
       edad,
       rol: this.usuario.rol,
-      dni: this.usuario.dni,
-      sexo: this.usuario.sexo,
-      direccion: this.usuario.direccion,
+      dni: this.usuario.dni || null,
+      sexo: this.usuario.sexo || null,
+      direccion: this.usuario.direccion || null,
       activo: true,
       created_at: new Date().toISOString()
     };

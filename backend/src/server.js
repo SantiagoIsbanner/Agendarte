@@ -4,6 +4,7 @@ require('dotenv').config();
 const permisosRoutes = require('./routes/permisosRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const profesionalRoutes = require('./routes/profesionalRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/api', permisosRoutes);
 app.use('/api', usuarioRoutes);
 app.use('/api', profesionalRoutes);
+app.use('/api/auth', authRoutes);
 
 // Ruta básica
 app.get('/', (req, res) => {

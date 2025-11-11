@@ -28,6 +28,7 @@ export class RegisterPacienteComponent implements AfterViewInit {
   };
 
   errorMessage = '';
+  showSuccessModal = false;
 
   constructor(
     private router: Router,
@@ -37,12 +38,16 @@ export class RegisterPacienteComponent implements AfterViewInit {
   ngAfterViewInit() {
     const elem = document.getElementById('fecha_nacimiento');
     if (elem) {
-      new Datepicker(elem, {
+      const datepicker = new Datepicker(elem, {
         language: 'es',
         format: 'yyyy-mm-dd',
         autohide: true,
         todayHighlight: true,
         clearBtn: true
+      });
+      
+      elem.addEventListener('changeDate', (e: any) => {
+        this.usuario.fecha_nacimiento = e.target.value;
       });
     }
   }
@@ -53,8 +58,10 @@ export class RegisterPacienteComponent implements AfterViewInit {
       return;
     }
 
-    if (!this.usuario.mail || !this.usuario['contraseña'] || !this.usuario.nombre || !this.usuario.apellido) {
-      this.errorMessage = 'Por favor complete los campos obligatorios';
+    if (!this.usuario.mail || !this.usuario['contraseña'] || !this.usuario.nombre || 
+        !this.usuario.apellido || !this.usuario.dni || !this.usuario.sexo || 
+        !this.usuario.fecha_nacimiento || !this.usuario.numero_telefono || !this.usuario.direccion) {
+      this.errorMessage = 'Por favor complete todos los campos';
       return;
     }
 
@@ -79,8 +86,11 @@ export class RegisterPacienteComponent implements AfterViewInit {
 
     this.usuarioService.createUsuario(usuarioData as any).subscribe({
       next: (response) => {
-        alert('Registro exitoso! Redirigiendo al login...');
-        this.router.navigate(['/login']);
+        this.showSuccessModal = true;
+        setTimeout(() => {
+          this.showSuccessModal = false;
+          this.router.navigate(['/login']);
+        }, 2000);
       },
       error: (error) => {
         this.errorMessage = error.error?.error || 'Error al registrar usuario';
