@@ -53,44 +53,12 @@ ng serve
 ```
 
 ### Base de Datos
-
-#### Opción 1: Docker (Recomendado)
 ```bash
-# 1. Asegúrate de que Docker Desktop esté ejecutándose
-
-# 2. Levantar PostgreSQL en Docker
+cd database
 docker-compose up -d
-
-# 3. Verificar que esté funcionando
-docker-compose ps
-
-# 4. Ver logs si hay problemas
-docker-compose logs postgres
 ```
 
-**Datos de conexión:**
-- Host: `localhost`
-- Puerto: `5433`
-- Base de datos: `agendarte2`
-- Usuario: `postgres`
-- Contraseña: `admin123`
-
-#### Comandos útiles:
-```bash
-# Parar la base de datos
-docker-compose down
-
-# Conectar desde terminal
-docker exec -it agendarte-db psql -U postgres -d agendarte2
-
-# Limpiar completamente (elimina datos)
-docker-compose down -v
-```
-
-#### Opción 2: Instalación Manual
-```bash
-psql -U postgres -f database/create_database.sql
-```
+> **Documentación completa**: [Database README](./database/README.md)
 
 ## 🔧 Desarrollo
 
@@ -98,8 +66,18 @@ psql -U postgres -f database/create_database.sql
 - **Frontend**: Puerto 4200 (Angular Dev Server)
 - **Base de Datos**: PostgreSQL
 
+## 🎆 Funcionalidades
+
+- 📅 **Gestión de Turnos** - Crear, modificar y cancelar citas médicas
+- 👥 **Gestión de Pacientes** - Registro y administración de pacientes
+- 👨‍⚕️ **Gestión de Profesionales** - Administración de médicos y especialistas
+- 🔐 **Autenticación** - Sistema de login seguro con JWT
+- 📈 **Dashboard** - Panel de control con estadísticas
+- 📅 **Calendario** - Vista de calendario para turnos
+
 ## 📚 Documentación
 
 Consulta los README específicos en cada carpeta:
-- [Backend README](./backend/README.md)
-- [Frontend README](./frontend/README.md)
+- [Backend README](./backend/README.md) - API REST y configuración
+- [Frontend README](./frontend/README.md) - Aplicación Angular
+- [Database README](./database/README.md) - Base de datos PostgreSQL

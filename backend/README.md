@@ -41,12 +41,14 @@ Configura las siguientes variables en tu archivo `.env`:
 ```env
 PORT=3000
 DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=agendarte
+DB_PORT=5433
+DB_NAME=agendarte2
 DB_USER=postgres
-DB_PASSWORD=tu_password
+DB_PASSWORD=admin123
 JWT_SECRET=tu_jwt_secret
 ```
+
+> **Nota**: Para configurar la base de datos, consulta [Database README](../database/README.md)
 
 ## 📡 API Endpoints
 
