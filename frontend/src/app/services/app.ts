@@ -1,12 +1,12 @@
 import { Component, signal, OnInit } from '@angular/core';
-import { Router, RouterOutlet, NavigationEnd, RouterLink } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { PermisosService } from '../services/permisos.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, RouterLink],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

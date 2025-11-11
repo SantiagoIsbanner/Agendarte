@@ -7,7 +7,6 @@ import { AdminDashboardComponent } from '../components/admin-dashboard/admin-das
 import { PanelProfesionalComponent } from '../components/panel-profesional/panel-profesional.component';
 import { PanelPacienteComponent } from '../components/panel-paciente/panel-paciente.component';
 import { AdministradorComponent } from '../components/administrador/administrador.component';
-import { InicioComponent } from '../components/inicio/inicio.component';
 import { GestionUsuariosComponent } from '../components/gestion-usuarios/gestion-usuarios.component';
 import { AdminRolesComponent } from '../components/admin-roles/admin-roles.component';
 import { EditarPerfilComponent } from '../components/editar-perfil/editar-perfil.component';
