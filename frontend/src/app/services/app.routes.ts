@@ -5,6 +5,7 @@ import { RegisterProfesionalComponent } from '../components/register-profesional
 import { AdminDashboardComponent } from '../components/admin-dashboard/admin-dashboard.component';
 import { PanelProfesionalComponent } from '../components/panel-profesional/panel-profesional.component';
 import { PanelPacienteComponent } from '../components/panel-paciente/panel-paciente.component';
+import { MisTurnosComponent } from '../components/mis-turnos/mis-turnos.component';
 import { AdministradorComponent } from '../components/administrador/administrador.component';
 import { InicioComponent } from '../components/inicio/inicio.component';
 import { GestionUsuariosComponent } from '../components/gestion-usuarios/gestion-usuarios.component';
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'admin', component: AdminDashboardComponent },
   { path: 'panel-profesional', component: PanelProfesionalComponent },
   { path: 'panel-paciente', component: PanelPacienteComponent },
+  { path: 'mis-turnos', component: MisTurnosComponent },
   { path: 'administrador', component: AdministradorComponent },
   { path: 'gestion-usuarios', component: GestionUsuariosComponent },
   { path: 'admin-roles', component: AdminRolesComponent },

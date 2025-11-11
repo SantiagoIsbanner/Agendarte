@@ -1,0 +1,257 @@
+<div class="turnos-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-icon">📅</div>
+      <h1>Mis Turnos</h1>
+      <p>Visualiza y gestiona tus citas próximas</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ conteoProximas() }}</span>
+        <span class="stat-label">Citas Programadas</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ isAuthenticated() ? '✓' : '✗' }}</span>
+        <span class="stat-label">Google Sync</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <div class="action-group">
+      @if (isAuthenticated()) {
+        <button class="btn-modern primary" (click)="cargarEventos()" [disabled]="isLoading()">
+          <span class="btn-icon">🔄</span>
+          <span>{{ isLoading() ? 'Actualizando...' : 'Actualizar Turnos' }}</span>
+        </button>
+        <button class="btn-modern secondary" (click)="exportarCalendario()">
+          <span class="btn-icon">📥</span>
+          <span>Descargar</span>
+        </button>
+      }
+    </div>
+
+    <div class="connection-status">
+      @if (isAuthenticated()) {
+        <div class="status-badge connected">
+          <span class="status-dot"></span>
+          <span>Google Calendar Conectado</span>
+        </div>
+        <span class="ultima-actualizacion">Última actualización: {{ ultimaActualizacion() }}</span>
+      } @else {
+        <button class="btn-modern google" (click)="authenticate()" [disabled]="isConnecting()">
+          @if (isConnecting()) {
+            <span class="btn-icon spinning">⟳</span>
+            <span>Conectando...</span>
+          } @else {
+            <span class="btn-icon">🔗</span>
+            <span>Conectar Google Calendar</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Evento Actual/Próximo -->
+  @if (eventosAhora() && isAuthenticated()) {
+    <div class="evento-actual-section">
+      <div class="evento-actual-card">
+        <div class="evento-actual-header">
+          <span class="evento-label">EN PROGRESO</span>
+        </div>
+        <div class="evento-actual-content">
+          <h3>{{ eventosAhora()!.title }}</h3>
+          <div class="evento-detalles">
+            <div class="detalle">
+              <span class="icon">🕐</span>
+              <span>{{ formatearHora(eventosAhora()!.start) }} - {{ formatearHora(eventosAhora()!.end) }}</span>
+            </div>
+            @if (eventosAhora()!.location) {
+              <div class="detalle">
+                <span class="icon">📍</span>
+                <span>{{ eventosAhora()!.location }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Lista de Turnos -->
+  @if (isAuthenticated()) {
+    <div class="turnos-list-section">
+      <div class="section-header">
+        <h2>📋 Mis Turnos Programados</h2>
+        <div class="filtro-info">
+          Total: {{ conteoProximas() }} citas
+        </div>
+      </div>
+
+      @if (eventos().length > 0) {
+        <div class="turnos-list">
+          @for (evento of eventos(); track evento.id) {
+            <div class="turno-card" [ngClass]="obtenerClaseEstado(evento)">
+              <div class="turno-estado-indicator">
+                <span class="estado-icon">{{ obtenerIconoEstado(evento) }}</span>
+              </div>
+
+              <div class="turno-header">
+                <h3 class="turno-titulo">{{ evento.title }}</h3>
+                <span class="turno-tiempo">{{ calcularTiempoRestante(evento.start) }}</span>
+              </div>
+
+              <div class="turno-info">
+                <div class="info-item">
+                  <span class="info-icon">📅</span>
+                  <div class="info-content">
+                    <span class="info-label">Fecha</span>
+                    <span class="info-valor">{{ formatearFecha(evento.start) }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <span class="info-icon">🕐</span>
+                  <div class="info-content">
+                    <span class="info-label">Hora</span>
+                    <span class="info-valor">{{ formatearHora(evento.start) }} - {{ formatearHora(evento.end) }}</span>
+                  </div>
+                </div>
+
+                @if (evento.location) {
+                  <div class="info-item">
+                    <span class="info-icon">📍</span>
+                    <div class="info-content">
+                      <span class="info-label">Ubicación</span>
+                      <span class="info-valor">{{ evento.location }}</span>
+                    </div>
+                  </div>
+                }
+
+                @if (evento.profesional) {
+                  <div class="info-item">
+                    <span class="info-icon">👨‍⚕️</span>
+                    <div class="info-content">
+                      <span class="info-label">Profesional</span>
+                      <span class="info-valor">{{ evento.profesional }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <div class="turno-actions">
+                <button class="btn-turno-secondary" (click)="verDetalles(evento)">
+                  <span class="icon">ℹ️</span>
+                  Ver Detalles
+                </button>
+                <button class="btn-turno-danger" (click)="cancelarTurno(evento)">
+                  <span class="icon">❌</span>
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3>No tienes turnos programados</h3>
+          <p>Haz clic en "Actualizar Turnos" para sincronizar con Google Calendar</p>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="no-auth-section">
+      <div class="no-auth-content">
+        <div class="no-auth-icon">🔒</div>
+        <h2>Conecta tu Google Calendar</h2>
+        <p>Para ver tus turnos, necesitas conectar tu cuenta de Google Calendar</p>
+        <button class="btn-modern google large" (click)="authenticate()" [disabled]="isConnecting()">
+          @if (isConnecting()) {
+            <span class="btn-icon spinning">⟳</span>
+            <span>Conectando...</span>
+          } @else {
+            <span class="btn-icon">🔗</span>
+            <span>Conectar Google Calendar</span>
+          }
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de Detalles -->
+  @if (showEventModal() && selectedEvent()) {
+    <div class="modal-overlay" (click)="cerrarModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>📅 Detalles del Turno</h3>
+          <button class="close-btn" (click)="cerrarModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="event-details">
+            <div class="detail-item">
+              <strong>Cita:</strong>
+              <span>{{ selectedEvent()!.title }}</span>
+            </div>
+
+            <div class="detail-item">
+              <strong>Fecha:</strong>
+              <span>{{ formatearFecha(selectedEvent()!.start) }}</span>
+            </div>
+
+            <div class="detail-item">
+              <strong>Hora:</strong>
+              <span>{{ formatearHora(selectedEvent()!.start) }} - {{ formatearHora(selectedEvent()!.end) }}</span>
+            </div>
+
+            @if (selectedEvent()!.location) {
+              <div class="detail-item">
+                <strong>Ubicación:</strong>
+                <span>{{ selectedEvent()!.location }}</span>
+              </div>
+            }
+
+            @if (selectedEvent()!.profesional) {
+              <div class="detail-item">
+                <strong>Profesional:</strong>
+                <span>{{ selectedEvent()!.profesional }}</span>
+              </div>
+            }
+
+            @if (selectedEvent()!.email) {
+              <div class="detail-item">
+                <strong>Email del Profesional:</strong>
+                <span>{{ selectedEvent()!.email }}</span>
+              </div>
+            }
+
+            @if (selectedEvent()!.description) {
+              <div class="detail-item">
+                <strong>Descripción:</strong>
+                <span class="description-text">{{ selectedEvent()!.description }}</span>
+              </div>
+            }
+
+            <div class="detail-item">
+              <strong>Estado:</strong>
+              <span class="estado-badge" [ngClass]="obtenerClaseEstado(selectedEvent()!)">
+                {{ calcularTiempoRestante(selectedEvent()!.start) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn danger" (click)="cancelarTurno(selectedEvent()!)">
+            <span class="icon">❌</span>
+            Cancelar Turno
+          </button>
+          <button class="btn" (click)="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
