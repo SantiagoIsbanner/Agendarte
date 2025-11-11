@@ -1,19 +1,114 @@
 <div class="panel-container">
-  <div class="page-header">
-    <h1>📅 Panel Profesional - Calendario</h1>
-    <p>Gestiona tu agenda médica con Google Calendar</p>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-icon">🩺</div>
+      <h1>Panel Profesional</h1>
+      <p>Gestiona tu agenda médica de forma inteligente</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ events().length }}</span>
+        <span class="stat-label">Citas Hoy</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ isAuthenticated() ? '✓' : '✗' }}</span>
+        <span class="stat-label">Google Sync</span>
+      </div>
+    </div>
   </div>
 
-  <div class="auth-section">
-    <button class="btn google-btn" (click)="authenticate()">🔐 Conectar con Google</button>
-    <button class="btn success" (click)="loadCalendar()">📅 Cargar Eventos</button>
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <div class="action-group">
+      <button class="btn-modern primary" (click)="showNewAppointmentModal()">
+        <span class="btn-icon">➕</span>
+        <span>Nueva Cita</span>
+      </button>
+      <button class="btn-modern secondary" (click)="loadCalendar()" [disabled]="!isAuthenticated()">
+        <span class="btn-icon">🔄</span>
+        <span>Sincronizar</span>
+      </button>
+    </div>
     
-    @if (isAuthenticated()) {
-      <div class="status success">✅ Conectado con Google Calendar</div>
-    }
+    <div class="connection-status">
+      @if (isAuthenticated()) {
+        <div class="status-badge connected">
+          <span class="status-dot"></span>
+          <span>Google Calendar Conectado</span>
+        </div>
+      } @else {
+        <button class="btn-modern google" (click)="authenticate()" [disabled]="isConnecting()">
+          @if (isConnecting()) {
+            <span class="btn-icon spinning">⟳</span>
+            <span>Conectando...</span>
+          } @else {
+            <span class="btn-icon">🔗</span>
+            <span>Conectar Google</span>
+          }
+        </button>
+      }
+    </div>
   </div>
 
-  <div class="calendar-container">
-    <div id="calendar"></div>
+  <!-- Calendar Section -->
+  <div class="calendar-section">
+    <div class="section-header">
+      <h2>📅 Calendario de Citas</h2>
+      <div class="calendar-controls">
+        <button class="control-btn active">Mes</button>
+        <button class="control-btn">Semana</button>
+        <button class="control-btn">Día</button>
+      </div>
+    </div>
+    <div class="calendar-wrapper">
+      <div id="calendar"></div>
+    </div>
   </div>
+
+  <!-- Modal para nuevo turno -->
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>➕ Asignar Nuevo Turno</h3>
+          <button class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Paciente: *</label>
+            <input type="text" [(ngModel)]="newAppointment.patient" placeholder="Nombre del paciente" required>
+          </div>
+          <div class="form-group">
+            <label>Email del paciente: *</label>
+            <input type="email" [(ngModel)]="newAppointment.email" placeholder="email@ejemplo.com" required>
+          </div>
+          <div class="form-group">
+            <label>Fecha: *</label>
+            <input type="date" [(ngModel)]="newAppointment.date" required>
+          </div>
+          <div class="form-group">
+            <label>Hora: *</label>
+            <input type="time" [(ngModel)]="newAppointment.time" required>
+          </div>
+          <div class="form-group">
+            <label>Duración:</label>
+            <select [(ngModel)]="newAppointment.duration">
+              <option value="30">30 minutos</option>
+              <option value="60">1 hora</option>
+              <option value="90">1.5 horas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Notas:</label>
+            <textarea [(ngModel)]="newAppointment.notes" placeholder="Notas adicionales"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" (click)="closeModal()">Cancelar</button>
+          <button class="btn success" (click)="saveAppointment()">💾 Guardar Turno</button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
