@@ -66,22 +66,32 @@
   margin-bottom: 30px;
 }
 
+.search-box,
+.filter-box {
+  position: relative;
+}
+
 .search-input,
 .filter-select {
-  padding: 16px 20px;
+  width: 100%;
+  padding: 18px 24px;
   border: 2px solid rgba(65, 92, 107, 0.2);
-  border-radius: 12px;
+  border-radius: 16px;
   font-size: 16px;
-  background: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
 }
 
 .search-input:focus,
 .filter-select:focus {
   outline: none;
   border-color: #415c6b;
-  box-shadow: 0 0 0 3px rgba(65, 92, 107, 0.1);
+  box-shadow: 0 0 0 4px rgba(65, 92, 107, 0.15), 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .roles-section {
