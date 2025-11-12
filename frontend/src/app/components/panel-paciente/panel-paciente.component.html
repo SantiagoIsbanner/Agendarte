@@ -84,14 +84,6 @@
               <input type="time" [(ngModel)]="editEventData.hora" required>
             </div>
             <div class="form-group">
-              <label>Duración:</label>
-              <select [(ngModel)]="editEventData.duracion">
-                <option value="30">30 minutos</option>
-                <option value="60">1 hora</option>
-                <option value="90">1.5 horas</option>
-              </select>
-            </div>
-            <div class="form-group">
               <label>Notas:</label>
               <textarea [(ngModel)]="editEventData.notas" placeholder="Notas adicionales"></textarea>
             </div>
@@ -173,14 +165,7 @@
             <label>Hora: *</label>
             <input type="time" [(ngModel)]="newAppointment.hora" required>
           </div>
-          <div class="form-group">
-            <label>Duración:</label>
-            <select [(ngModel)]="newAppointment.duracion">
-              <option value="30">30 minutos</option>
-              <option value="60">1 hora</option>
-              <option value="90">1.5 horas</option>
-            </select>
-          </div>
+          
           <div class="form-group">
             <label>Notas:</label>
             <textarea [(ngModel)]="newAppointment.notas" placeholder="Notas adicionales (síntomas, alergias, etc.)"></textarea>

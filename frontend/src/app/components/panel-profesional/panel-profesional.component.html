@@ -132,8 +132,12 @@
         <div class="modal-body">
           <div class="event-details">
             <div class="detail-item">
-              <strong>Paciente:</strong>
+              <strong>Nombre del Paciente:</strong>
               <span>{{ selectedEvent()?.title?.replace('Consulta - ', '') }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Email del Paciente:</strong>
+              <span>{{ selectedEvent()?.extendedProps?.email || 'No especificado' }}</span>
             </div>
             <div class="detail-item">
               <strong>Fecha:</strong>
@@ -142,10 +146,6 @@
             <div class="detail-item">
               <strong>Hora:</strong>
               <span>{{ formatTime(selectedEvent()?.start) }} - {{ formatTime(selectedEvent()?.end) }}</span>
-            </div>
-            <div class="detail-item">
-              <strong>Email:</strong>
-              <span>{{ selectedEvent()?.extendedProps?.email || 'No especificado' }}</span>
             </div>
             <div class="detail-item">
               <strong>Notas:</strong>

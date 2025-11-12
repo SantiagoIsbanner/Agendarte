@@ -116,17 +116,26 @@ export class PanelProfesionalComponent implements OnInit {
     
     try {
       const googleEvents = await this.googleCalendarService.getEvents();
-      const formattedEvents = googleEvents.map(event => ({
-        title: event.summary || 'Sin título',
-        start: event.start.dateTime || event.start.date,
-        end: event.end.dateTime || event.end.date,
-        id: event.id,
-        extendedProps: {
-          description: event.description,
-          location: event.location,
-          googleId: event.id
-        }
-      }));
+      const formattedEvents = googleEvents.map(event => {
+        // Extraer email del paciente de los attendees
+        const patientEmail = event.attendees && event.attendees.length > 0 
+          ? event.attendees[0].email 
+          : 'No especificado';
+        
+        return {
+          title: event.summary || 'Sin título',
+          start: event.start.dateTime || event.start.date,
+          end: event.end.dateTime || event.end.date,
+          id: event.id,
+          extendedProps: {
+            description: event.description,
+            location: event.location,
+            googleId: event.id,
+            email: patientEmail,
+            notes: event.description || 'Sin notas'
+          }
+        };
+      });
       
       this.events.set(formattedEvents);
       if (this.calendar) {
