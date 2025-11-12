@@ -3,11 +3,10 @@ const pool = require('../config/database');
 class UsuarioRepository {
   async findAll() {
     const query = `
-      SELECT u.*, e.nombre as especialidad, p.sub_especialidad, p.honorarios, 
+      SELECT u.*, p.especialidad, p.sub_especialidad, p.honorarios, 
              p.matricula, p.tiempo_consulta_minutos, p.bio
       FROM usuario u
       LEFT JOIN profesional p ON u.id = p.usuario_id
-      LEFT JOIN especialidad e ON p.especialidad_id = e.id
       WHERE u.activo = true
     `;
     const result = await pool.query(query);
@@ -16,11 +15,10 @@ class UsuarioRepository {
 
   async findById(id) {
     const query = `
-      SELECT u.*, e.nombre as especialidad, p.sub_especialidad, p.honorarios, 
+      SELECT u.*, p.especialidad, p.sub_especialidad, p.honorarios, 
              p.matricula, p.tiempo_consulta_minutos, p.bio
       FROM usuario u
       LEFT JOIN profesional p ON u.id = p.usuario_id
-      LEFT JOIN especialidad e ON p.especialidad_id = e.id
       WHERE u.id = $1
     `;
     const result = await pool.query(query, [id]);
@@ -34,11 +32,10 @@ class UsuarioRepository {
 
   async findByRol(rol) {
     const query = `
-      SELECT u.*, e.nombre as especialidad, p.sub_especialidad, p.honorarios, 
+      SELECT u.*, p.especialidad, p.sub_especialidad, p.honorarios, 
              p.matricula, p.tiempo_consulta_minutos, p.bio
       FROM usuario u
       LEFT JOIN profesional p ON u.id = p.usuario_id
-      LEFT JOIN especialidad e ON p.especialidad_id = e.id
       WHERE u.rol = $1 AND u.activo = true
     `;
     const result = await pool.query(query, [rol]);
@@ -94,22 +91,18 @@ class UsuarioRepository {
       const resultUsuario = await client.query(queryUsuario, valuesUsuario);
       
       if (usuario.especialidad !== undefined) {
-        const especialidadQuery = 'SELECT id FROM especialidad WHERE nombre = $1';
-        const especialidadResult = await client.query(especialidadQuery, [usuario.especialidad]);
-        const especialidadId = especialidadResult.rows[0]?.id;
-        
         const checkProfesional = await client.query('SELECT * FROM profesional WHERE usuario_id = $1', [id]);
         
         if (checkProfesional.rows.length > 0) {
           const queryProfesional = `
             UPDATE profesional 
-            SET especialidad_id = $1, sub_especialidad = $2, honorarios = $3, 
+            SET especialidad = $1, sub_especialidad = $2, honorarios = $3, 
                 matricula = $4, tiempo_consulta_minutos = $5, bio = $6
             WHERE usuario_id = $7
             RETURNING *
           `;
           const valuesProfesional = [
-            especialidadId,
+            usuario.especialidad,
             usuario.sub_especialidad,
             usuario.honorarios,
             usuario.matricula,
@@ -120,13 +113,13 @@ class UsuarioRepository {
           await client.query(queryProfesional, valuesProfesional);
         } else {
           const queryInsertProfesional = `
-            INSERT INTO profesional (usuario_id, especialidad_id, sub_especialidad, honorarios, matricula, tiempo_consulta_minutos, bio)
+            INSERT INTO profesional (usuario_id, especialidad, sub_especialidad, honorarios, matricula, tiempo_consulta_minutos, bio)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *
           `;
           const valuesInsertProfesional = [
             id,
-            especialidadId,
+            usuario.especialidad,
             usuario.sub_especialidad,
             usuario.honorarios,
             usuario.matricula,
