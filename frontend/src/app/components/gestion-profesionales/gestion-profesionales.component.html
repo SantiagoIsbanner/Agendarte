@@ -27,8 +27,9 @@
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Email</th>
+          <th>Especialidad</th>
+          <th>Matrícula</th>
           <th>Teléfono</th>
-          <th>DNI</th>
         </tr>
       </thead>
       <tbody>
@@ -37,11 +38,12 @@
           <td>{{ prof.nombre }}</td>
           <td>{{ prof.apellido }}</td>
           <td>{{ prof.mail }}</td>
-          <td>{{ prof.numero_telefono }}</td>
-          <td>{{ prof.dni }}</td>
+          <td>{{ prof.especialidad || 'Sin especialidad' }}</td>
+          <td>{{ prof.matricula || 'N/A' }}</td>
+          <td>{{ prof.numero_telefono || 'N/A' }}</td>
         </tr>
         <tr *ngIf="profesionalesFiltrados.length === 0">
-          <td colspan="6" class="no-data">No se encontraron profesionales</td>
+          <td colspan="7" class="no-data">No se encontraron profesionales</td>
         </tr>
       </tbody>
     </table>
