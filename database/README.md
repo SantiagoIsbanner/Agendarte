@@ -1,82 +1,67 @@
-# 🗄️ Base de Datos - Agendarte
+# Base de Datos Agendarte
 
-Base de datos PostgreSQL para el sistema de gestión de turnos médicos.
+## Configuración Inicial
 
-## 📋 Estructura de la Base de Datos
+### Requisitos
+- PostgreSQL 12 o superior
+- Puerto: 5433 (o modificar en `backend/src/config/database.js`)
 
-### Tablas Principales
-- **usuarios** - Información de usuarios del sistema
-- **turnos** - Gestión de citas y turnos médicos
-- **pacientes** - Datos de pacientes
-- **profesionales** - Información de médicos y especialistas
+### Instalación
 
-### Tipos de Datos
-- **estado_turno** - Estados: pendiente, confirmado, cancelado, completado
-- **tipo_usuario** - Tipos: admin, profesional, recepcionista
-
-## 🐳 Configuración con Docker
-
-### Prerrequisitos
-- Docker Desktop instalado y ejecutándose
-
-### Levantar la Base de Datos
+1. **Crear la base de datos:**
 ```bash
-cd database
-docker-compose up -d
+psql -U postgres -h localhost -p 5433 -f setup_database.sql
 ```
 
-### Verificar Estado
+2. **Crear usuarios con contraseñas reales:**
+Ejecuta desde el backend:
 ```bash
-# Ver contenedores activos
-docker-compose ps
-
-# Ver logs
-docker-compose logs postgres
+cd backend
+node scripts/create-test-users.js
 ```
 
-## 🔗 Datos de Conexión
+O manualmente desde psql:
+```sql
+-- Conectar a la base de datos
+\c agendarte2
 
-- **Host**: `localhost`
-- **Puerto**: `5433`
-- **Base de datos**: `agendarte2`
-- **Usuario**: `postgres`
-- **Contraseña**: `admin123`
-
-### String de Conexión
-```
-postgresql://postgres:admin123@localhost:5433/agendarte2
+-- Actualizar contraseñas (estos son los hashes correctos)
+UPDATE usuario SET contraseña = '$2a$10$eFPigszzz2Aws3o..ifYC.swWJVwhyv4wTtZuW5yqhtH2DlhbwNOW' WHERE mail = 'admin@agendarte.com';
+UPDATE usuario SET contraseña = '$2a$10$ejemplo_hash_paciente' WHERE mail = 'paciente@test.com';
+UPDATE usuario SET contraseña = '$2a$10$ejemplo_hash_profesional' WHERE mail = 'profesional@test.com';
 ```
 
-## 🛠️ Comandos Útiles
+## Usuarios de Prueba
 
+- **Admin:** admin@agendarte.com / admin1
+- **Paciente:** paciente@test.com / paciente123
+- **Profesional:** profesional@test.com / profesional123
+
+## Backup y Restauración
+
+### Exportar solo estructura:
 ```bash
-# Parar la base de datos
-docker-compose down
-
-# Conectar desde terminal
-docker exec -it agendarte-db psql -U postgres -d agendarte2
-
-# Reiniciar con datos limpios
-docker-compose down -v
-docker-compose up -d
-
-# Ver logs en tiempo real
-docker-compose logs -f postgres
+pg_dump -U postgres -h localhost -p 5433 -d agendarte2 --schema-only > schema.sql
 ```
 
-## 📁 Archivos
-
-- `create_database.sql` - Script de creación de tablas y estructura
-- `docker-compose.yml` - Configuración de Docker para PostgreSQL
-- `README.md` - Esta documentación
-
-## 🔧 Configuración Manual (Alternativa)
-
-Si prefieres instalar PostgreSQL localmente:
-
+### Exportar datos completos (NO subir a Git):
 ```bash
-# Ejecutar script SQL
-psql -U postgres -f create_database.sql
-
-# Configurar conexión en puerto 5432
+pg_dump -U postgres -h localhost -p 5433 -d agendarte2 > backup_completo.sql
 ```
+
+### Restaurar:
+```bash
+psql -U postgres -h localhost -p 5433 -d agendarte2 < backup_completo.sql
+```
+
+## Notas Importantes
+
+⚠️ **NO subir a Git:**
+- Backups completos con datos reales
+- Archivos con contraseñas sin hashear
+- Datos de usuarios reales
+
+✅ **Sí subir a Git:**
+- Scripts de estructura (schema)
+- Scripts de datos de ejemplo
+- Documentación
