@@ -33,7 +33,15 @@ class UsuarioRepository {
   }
 
   async findByRol(rol) {
-    const result = await pool.query('SELECT * FROM usuario WHERE rol = $1 AND activo = true', [rol]);
+    const query = `
+      SELECT u.*, e.nombre as especialidad, p.sub_especialidad, p.honorarios, 
+             p.matricula, p.tiempo_consulta_minutos, p.bio
+      FROM usuario u
+      LEFT JOIN profesional p ON u.id = p.usuario_id
+      LEFT JOIN especialidad e ON p.especialidad_id = e.id
+      WHERE u.rol = $1 AND u.activo = true
+    `;
+    const result = await pool.query(query, [rol]);
     return result.rows;
   }
 
