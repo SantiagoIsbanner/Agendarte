@@ -104,14 +104,18 @@ export class EditarPerfilComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const elem = document.getElementById('fecha_nacimiento');
+    const elem = document.getElementById('fecha_nacimiento') as HTMLInputElement;
     if (elem) {
-      new Datepicker(elem, {
+      const datepicker = new Datepicker(elem, {
         language: 'es',
         format: 'yyyy-mm-dd',
         autohide: true,
         todayHighlight: true,
         clearBtn: true
+      });
+      
+      elem.addEventListener('changeDate', () => {
+        this.usuario.fecha_nacimiento = elem.value;
       });
     }
   }
@@ -128,8 +132,11 @@ export class EditarPerfilComponent implements OnInit, AfterViewInit {
       datosActualizar.bio = this.profesional.bio;
     }
 
+    console.log('Datos a enviar:', datosActualizar);
+
     this.usuarioService.updateUsuario(datosActualizar).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('Respuesta del servidor:', response);
         localStorage.setItem('usuario', JSON.stringify(datosActualizar));
         this.showSuccessModal = true;
         setTimeout(() => {
@@ -139,7 +146,8 @@ export class EditarPerfilComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         console.error('Error actualizando perfil:', error);
-        alert('Error al actualizar el perfil');
+        console.error('Detalles:', error.error);
+        alert('Error al actualizar el perfil: ' + (error.error?.error || error.message));
       }
     });
   }

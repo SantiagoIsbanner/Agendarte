@@ -487,6 +487,65 @@
   margin: 0 auto;
 }
 
+/* Modal de éxito */
+.success-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: scaleIn 0.5s ease-out;
+}
+
+.success-modal h3 {
+  color: #415c6b;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.confirm-modal {
+  max-width: 450px;
+}
+
+.confirm-modal .modal-body {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #374151;
+}
+
+.confirm-modal .modal-body strong {
+  color: #415c6b;
+}
+
 @media (max-width: 768px) {
   .panel-container {
     padding: 10px;
