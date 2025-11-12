@@ -1,6 +1,6 @@
 # 🏥 Agendarte - Sistema de Gestión de Turnos Médicos
 
-Sistema web completo para la gestión de turnos médicos desarrollado con Angular, Node.js y PostgreSQL.
+Sistema web completo para la gestión de turnos médicos con integración a Google Calendar, desarrollado con Angular, Node.js y PostgreSQL.
 
 ## 📋 Descripción
 
@@ -10,54 +10,62 @@ Agendarte es una aplicación web que permite la gestión integral de turnos méd
 
 ```
 Agendarte/
-├── frontend/              # Aplicación Angular
+├── frontend/              # Aplicación Angular 20
 ├── backend/               # API REST Node.js/Express
-└── database/              # Scripts SQL y configuración
+└── database/              # Scripts SQL y configuración PostgreSQL
 ```
 
 ## ✨ Características Principales
 
-### Frontend (Angular)
-- 🎨 Interfaz moderna y responsive
-- 🔐 Sistema de autenticación
-- 👥 Gestión de usuarios y roles
-- 📅 Integración con Google Calendar
-- 📝 Formularios de registro y edición de perfil
-- 🗓️ Selector de fechas personalizado
+### 🎨 Frontend (Angular 20)
+- Interfaz moderna y responsive con diseño personalizado
+- Sistema de autenticación con guards
+- Gestión de usuarios por roles (Administrador, Profesional, Paciente)
+- Integración completa con Google Calendar API
+- Calendario interactivo con FullCalendar
+- Selector de fechas en español (vanillajs-datepicker)
+- Gestión de especialidades médicas
+- Panel de control con estadísticas en tiempo real
+- Modales de confirmación con animaciones
 
-### Backend (Node.js/Express)
-- 🏛️ Arquitectura de capas (Router → Controller → Service → Repository)
-- 🔒 Encriptación de contraseñas con bcryptjs
-- 📡 API REST con 15 endpoints CRUD
-- 🗄️ Conexión a PostgreSQL
-- 🌐 CORS habilitado
+### 🔧 Backend (Node.js/Express)
+- Arquitectura de 4 capas (Router → Controller → Service → Repository)
+- Encriptación de contraseñas con bcryptjs
+- API REST con 20+ endpoints CRUD
+- Conexión a PostgreSQL con pool de conexiones
+- Manejo de transacciones para integridad de datos
+- CORS configurado para desarrollo
 
-### Base de Datos (PostgreSQL)
-- 👤 Tabla de usuarios
-- 👨‍⚕️ Tabla de profesionales
-- 🔑 Tabla de permisos por rol
-- 🐳 Docker Compose para desarrollo
+### 🗄️ Base de Datos (PostgreSQL)
+- Tabla `usuario` con roles y permisos
+- Tabla `profesional` con datos médicos
+- Tabla `especialidad` con especialidades médicas
+- Tabla `permisos_rol` para control de acceso
+- Relaciones con foreign keys
+- Scripts de setup automatizados
 
 ## 🚀 Instalación y Ejecución
 
 ### Prerequisitos
 - Node.js 18+
-- PostgreSQL 14+
+- PostgreSQL 14+ (puerto 5433)
 - npm o yarn
+- Git
 
 ### 1. Clonar repositorio
 ```bash
-git clone https://github.com/SantiagoIsbanner/Agendarte.git
+git clone <repository-url>
 cd Agendarte
 ```
 
 ### 2. Configurar Base de Datos
 ```bash
 cd database
-docker-compose up -d
-# O ejecutar scripts SQL manualmente
-psql -U postgres -f create_database.sql
+# Ejecutar script de setup
+psql -U postgres -h localhost -p 5433 -f setup_database.sql
 ```
+
+Ver [Database README](./database/README.md) para más detalles.
 
 ### 3. Configurar Backend
 ```bash
@@ -68,6 +76,8 @@ cp .env.example .env
 npm start
 ```
 
+El servidor estará en: http://localhost:3000
+
 ### 4. Configurar Frontend
 ```bash
 cd frontend
@@ -75,11 +85,18 @@ npm install
 npm start
 ```
 
-### 5. Acceder a la aplicación
-- Frontend: http://localhost:4200
-- Backend API: http://localhost:3000
+La aplicación estará en: http://localhost:4200
 
-## 📡 API Endpoints
+## 👥 Usuarios de Prueba
+
+- **Admin:** admin@agendarte.com / admin1
+- **Paciente:** paciente@test.com / paciente123
+- **Profesional:** profesional@test.com / profesional123
+
+## 📡 API Endpoints Principales
+
+### Autenticación
+- `POST /api/auth/login` - Iniciar sesión
 
 ### Usuarios
 - `GET /api/usuarios` - Listar usuarios
@@ -88,30 +105,39 @@ npm start
 - `POST /api/usuarios` - Crear usuario
 - `PUT /api/usuarios/:id` - Actualizar usuario
 - `PUT /api/usuarios/:id/password` - Cambiar contraseña
-- `DELETE /api/usuarios/:id` - Eliminar usuario
+- `DELETE /api/usuarios/:id` - Eliminar usuario (soft delete)
 
 ### Profesionales
-- `GET /api/profesionales` - Listar profesionales
+- `GET /api/profesionales` - Listar profesionales con especialidades
 - `POST /api/profesionales` - Crear profesional
 - `PUT /api/profesionales/:id` - Actualizar profesional
 - `DELETE /api/profesionales/:id` - Eliminar profesional
 
-Ver [API_DOCUMENTATION.md](./backend/API_DOCUMENTATION.md) para más detalles.
+### Especialidades
+- `GET /api/especialidades` - Listar especialidades
+- `POST /api/especialidades` - Crear especialidad
+- `PUT /api/especialidades/:id` - Actualizar especialidad
+- `DELETE /api/especialidades/:id` - Eliminar especialidad
+
+### Permisos
+- `GET /api/permisos` - Obtener permisos por rol
+- `PUT /api/permisos` - Actualizar permisos
+
+Ver [API_DOCUMENTATION.md](./backend/API_DOCUMENTATION.md) para documentación completa.
 
 ## 🛠️ Tecnologías
 
 ### Frontend
 - Angular 20
-- TypeScript
-- RxJS
-- Angular Router
-- FormsModule
-- HttpClient
+- TypeScript 5
+- RxJS 7
+- FullCalendar 6
 - vanillajs-datepicker
+- Google Calendar API
 
 ### Backend
-- Node.js
-- Express
+- Node.js 18+
+- Express 4
 - PostgreSQL (pg)
 - bcryptjs
 - CORS
@@ -119,42 +145,52 @@ Ver [API_DOCUMENTATION.md](./backend/API_DOCUMENTATION.md) para más detalles.
 
 ### Base de Datos
 - PostgreSQL 14
-- Docker
+- Docker (opcional)
 
 ## 📚 Documentación
 
-- [Backend README](./backend/README.md)
-- [Frontend README](./frontend/README.md)
-- [Database README](./database/README.md)
-- [API Documentation](./backend/API_DOCUMENTATION.md)
-- [Test Endpoints](./backend/TEST_ENDPOINTS.md)
-- [Cumplimiento de Requisitos](./CUMPLIMIENTO_REQUISITOS.md)
+- [Backend README](./backend/README.md) - Documentación del API
+- [Frontend README](./frontend/README.md) - Documentación de Angular
+- [Database README](./database/README.md) - Setup de base de datos
+- [API Documentation](./backend/API_DOCUMENTATION.md) - Endpoints detallados
 
-## ✅ Cumplimiento de Requisitos Académicos
+## 🎯 Funcionalidades por Rol
 
-Este proyecto cumple con todos los requisitos del trabajo integrador:
+### Administrador
+- Dashboard con estadísticas
+- Gestión completa de usuarios
+- Gestión de especialidades médicas
+- Gestión de profesionales y pacientes
+- Configuración de permisos por rol
+- Cambio de contraseñas
 
-✅ Frontend con Angular (diseño UX, componentes, consumo de APIs)  
-✅ Backend con NodeJS y Express (arquitectura de capas completa)  
-✅ API REST con métodos CRUD (15 endpoints)  
-✅ Persistencia en PostgreSQL  
-✅ Versionado con GIT y GitHub  
-✅ Aplicación funcional
+### Profesional
+- Panel profesional
+- Gestión de turnos
+- Edición de perfil profesional
+- Integración con Google Calendar
 
-Ver [CUMPLIMIENTO_REQUISITOS.md](./CUMPLIMIENTO_REQUISITOS.md) para detalles completos.
+### Paciente
+- Panel de paciente
+- Agendar citas médicas
+- Ver mis turnos
+- Integración con Google Calendar
+- Editar perfil
 
-## 👥 Equipo
+## 🔐 Seguridad
 
-- Desarrollo Frontend y Backend
-- Diseño de Base de Datos
-- Integración y Testing
+- Contraseñas hasheadas con bcrypt (10 rounds)
+- Guards de autenticación en rutas
+- Validación de permisos por rol
+- Tokens de Google Calendar por usuario
+- Soft delete de usuarios
 
 ## 📄 Licencia
 
-Este proyecto fue desarrollado como trabajo integrador para IFTS N° 11 - Tecnicatura Superior en Desarrollo de Software.
+Este proyecto fue desarrollado como trabajo integrador académico.
 
 ## 🔗 Enlaces
 
-- Repositorio: https://github.com/SantiagoIsbanner/Agendarte
 - Frontend: http://localhost:4200
 - Backend API: http://localhost:3000
+- PostgreSQL: localhost:5433
