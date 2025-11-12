@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { UsuarioService } from '../../services/usuario.service';
 import { GoogleCalendarService } from '../../services/google-calendar.service';
 
@@ -14,6 +15,7 @@ import { GoogleCalendarService } from '../../services/google-calendar.service';
 })
 export class AdminDashboardComponent implements OnInit {
   showPasswordModal = false;
+  showSuccessModal = false;
   passwordData = {
     actual: '',
     nueva: '',
@@ -29,7 +31,8 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private router: Router,
     private usuarioService: UsuarioService,
-    private googleCalendarService: GoogleCalendarService
+    private googleCalendarService: GoogleCalendarService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -107,8 +110,23 @@ export class AdminDashboardComponent implements OnInit {
       return;
     }
 
-    // Aquí iría la lógica para cambiar la contraseña en el backend
-    alert('Contraseña actualizada exitosamente');
-    this.cerrarModal();
+    const usuarioId = this.usuario()?.id;
+    if (!usuarioId) {
+      alert('Error: Usuario no identificado');
+      return;
+    }
+
+    this.usuarioService.updatePassword(usuarioId, this.passwordData.actual, this.passwordData.nueva).subscribe({
+      next: () => {
+        this.cerrarModal();
+        this.showSuccessModal = true;
+        setTimeout(() => {
+          this.showSuccessModal = false;
+        }, 2000);
+      },
+      error: (error) => {
+        alert(error.error?.error || 'Error al cambiar la contraseña');
+      }
+    });
   }
 }
