@@ -16,6 +16,9 @@ export class PanelPacienteComponent implements OnInit {
   protected readonly events = signal<any[]>([]);
   protected readonly showEventModal = signal(false);
   protected readonly showModal = signal(false);
+  protected readonly showSuccessModal = signal(false);
+  protected readonly showUpdateSuccessModal = signal(false);
+  protected readonly showDeleteConfirmModal = signal(false);
   protected readonly isConnecting = signal(false);
   protected readonly selectedEvent = signal<any>(null);
   protected readonly isEditingEvent = signal(false);
@@ -275,8 +278,11 @@ export class PanelPacienteComponent implements OnInit {
       event.setEnd(endTime.toISOString());
       event.setExtendedProp('description', this.editEventData.notas);
 
-      alert('Cita actualizada exitosamente');
       this.closeEventModal();
+      this.showUpdateSuccessModal.set(true);
+      setTimeout(() => {
+        this.showUpdateSuccessModal.set(false);
+      }, 2000);
     } catch (error) {
       alert('Error al actualizar la cita');
     }
@@ -300,12 +306,19 @@ export class PanelPacienteComponent implements OnInit {
     });
   }
 
+  showDeleteConfirm() {
+    this.showDeleteConfirmModal.set(true);
+  }
+
+  closeDeleteConfirm() {
+    this.showDeleteConfirmModal.set(false);
+  }
+
   async deleteAppointment() {
     const event = this.selectedEvent();
     if (!event) return;
 
-    const confirmed = confirm(`¿Estás seguro de eliminar la cita de ${event.title}?`);
-    if (!confirmed) return;
+    this.showDeleteConfirmModal.set(false);
 
     try {
       const googleEventId = event.extendedProps?.googleId || event.id;
@@ -326,7 +339,6 @@ export class PanelPacienteComponent implements OnInit {
       this.events.set(updatedEvents);
 
       this.closeEventModal();
-      alert('Cita eliminada exitosamente');
     } catch (error) {
       alert('Error al eliminar la cita');
     }
@@ -410,9 +422,11 @@ export class PanelPacienteComponent implements OnInit {
         this.calendar.addEvent(newEvent);
       }
 
-      alert(`Cita creada exitosamente con ${profesionalSeleccionado.nombre} ${profesionalSeleccionado.apellido}.\nSe ha enviado una invitación por email a: ${profesionalSeleccionado.mail}`);
-
       this.closeModal();
+      this.showSuccessModal.set(true);
+      setTimeout(() => {
+        this.showSuccessModal.set(false);
+      }, 2000);
     } catch (error) {
       console.error('Error al guardar la cita:', error);
       alert('Error al guardar la cita en Google Calendar');

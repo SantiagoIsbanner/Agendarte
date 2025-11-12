@@ -55,11 +55,6 @@
   <div class="calendar-section">
     <div class="section-header">
       <h2>📅 Calendario de Citas</h2>
-      <div class="calendar-controls">
-        <button class="control-btn active">Mes</button>
-        <button class="control-btn">Semana</button>
-        <button class="control-btn">Día</button>
-      </div>
     </div>
     <div class="calendar-wrapper">
       <div id="calendar"></div>
@@ -130,7 +125,7 @@
             <button class="btn" (click)="isEditingEvent.set(false)">Cancelar</button>
             <button class="btn success" (click)="saveEditedEvent()">💾 Guardar</button>
           } @else {
-            <button class="btn danger" (click)="deleteAppointment()">🗑️ Eliminar</button>
+            <button class="btn danger" (click)="showDeleteConfirm()">🗑️ Eliminar</button>
             <button class="btn primary" (click)="startEditEvent()">✏️ Editar</button>
             <button class="btn" (click)="closeEventModal()">Cerrar</button>
           }
@@ -194,6 +189,45 @@
         <div class="modal-footer">
           <button class="btn" (click)="closeModal()">Cancelar</button>
           <button class="btn success" (click)="saveAppointment()">💾 Crear Cita</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de éxito creación -->
+  @if (showSuccessModal()) {
+    <div class="modal-overlay">
+      <div class="success-modal">
+        <div class="success-icon">✅</div>
+        <h3>Cita creada exitosamente</h3>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de éxito actualización -->
+  @if (showUpdateSuccessModal()) {
+    <div class="modal-overlay">
+      <div class="success-modal">
+        <div class="success-icon">✅</div>
+        <h3>Cita actualizada exitosamente</h3>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de confirmación de eliminación -->
+  @if (showDeleteConfirmModal()) {
+    <div class="modal-overlay" (click)="closeDeleteConfirm()">
+      <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>⚠️ Confirmar Eliminación</h3>
+          <button class="close-btn" (click)="closeDeleteConfirm()">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>¿Estás seguro de eliminar la cita de <strong>{{ selectedEvent()?.title }}</strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" (click)="closeDeleteConfirm()">Cancelar</button>
+          <button class="btn danger" (click)="deleteAppointment()">🗑️ Eliminar</button>
         </div>
       </div>
     </div>
