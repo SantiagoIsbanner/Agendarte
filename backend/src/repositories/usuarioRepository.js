@@ -2,12 +2,28 @@ const pool = require('../config/database');
 
 class UsuarioRepository {
   async findAll() {
-    const result = await pool.query('SELECT * FROM usuario WHERE activo = true');
+    const query = `
+      SELECT u.*, e.nombre as especialidad, p.sub_especialidad, p.honorarios, 
+             p.matricula, p.tiempo_consulta_minutos, p.bio
+      FROM usuario u
+      LEFT JOIN profesional p ON u.id = p.usuario_id
+      LEFT JOIN especialidad e ON p.especialidad_id = e.id
+      WHERE u.activo = true
+    `;
+    const result = await pool.query(query);
     return result.rows;
   }
 
   async findById(id) {
-    const result = await pool.query('SELECT * FROM usuario WHERE id = $1', [id]);
+    const query = `
+      SELECT u.*, e.nombre as especialidad, p.sub_especialidad, p.honorarios, 
+             p.matricula, p.tiempo_consulta_minutos, p.bio
+      FROM usuario u
+      LEFT JOIN profesional p ON u.id = p.usuario_id
+      LEFT JOIN especialidad e ON p.especialidad_id = e.id
+      WHERE u.id = $1
+    `;
+    const result = await pool.query(query, [id]);
     return result.rows[0];
   }
 
@@ -45,26 +61,82 @@ class UsuarioRepository {
   }
 
   async update(id, usuario) {
-    const query = `
-      UPDATE usuario 
-      SET nombre = $1, apellido = $2, numero_telefono = $3, fecha_nacimiento = $4, 
-          edad = $5, dni = $6, sexo = $7, direccion = $8, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $9
-      RETURNING *
-    `;
-    const values = [
-      usuario.nombre,
-      usuario.apellido,
-      usuario.numero_telefono,
-      usuario.fecha_nacimiento,
-      usuario.edad,
-      usuario.dni,
-      usuario.sexo,
-      usuario.direccion,
-      id
-    ];
-    const result = await pool.query(query, values);
-    return result.rows[0];
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      
+      const queryUsuario = `
+        UPDATE usuario 
+        SET nombre = $1, apellido = $2, numero_telefono = $3, fecha_nacimiento = $4, 
+            edad = $5, dni = $6, sexo = $7, direccion = $8, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $9
+        RETURNING *
+      `;
+      const valuesUsuario = [
+        usuario.nombre,
+        usuario.apellido,
+        usuario.numero_telefono,
+        usuario.fecha_nacimiento,
+        usuario.edad,
+        usuario.dni,
+        usuario.sexo,
+        usuario.direccion,
+        id
+      ];
+      const resultUsuario = await client.query(queryUsuario, valuesUsuario);
+      
+      if (usuario.especialidad !== undefined) {
+        const especialidadQuery = 'SELECT id FROM especialidad WHERE nombre = $1';
+        const especialidadResult = await client.query(especialidadQuery, [usuario.especialidad]);
+        const especialidadId = especialidadResult.rows[0]?.id;
+        
+        const checkProfesional = await client.query('SELECT * FROM profesional WHERE usuario_id = $1', [id]);
+        
+        if (checkProfesional.rows.length > 0) {
+          const queryProfesional = `
+            UPDATE profesional 
+            SET especialidad_id = $1, sub_especialidad = $2, honorarios = $3, 
+                matricula = $4, tiempo_consulta_minutos = $5, bio = $6
+            WHERE usuario_id = $7
+            RETURNING *
+          `;
+          const valuesProfesional = [
+            especialidadId,
+            usuario.sub_especialidad,
+            usuario.honorarios,
+            usuario.matricula,
+            usuario.tiempo_consulta_minutos,
+            usuario.bio,
+            id
+          ];
+          await client.query(queryProfesional, valuesProfesional);
+        } else {
+          const queryInsertProfesional = `
+            INSERT INTO profesional (usuario_id, especialidad_id, sub_especialidad, honorarios, matricula, tiempo_consulta_minutos, bio)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *
+          `;
+          const valuesInsertProfesional = [
+            id,
+            especialidadId,
+            usuario.sub_especialidad,
+            usuario.honorarios,
+            usuario.matricula,
+            usuario.tiempo_consulta_minutos,
+            usuario.bio
+          ];
+          await client.query(queryInsertProfesional, valuesInsertProfesional);
+        }
+      }
+      
+      await client.query('COMMIT');
+      return resultUsuario.rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   async updatePassword(id, nuevaContraseña) {
